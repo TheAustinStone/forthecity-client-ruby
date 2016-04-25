@@ -18,8 +18,6 @@ module RestoreStrategiesClient
       end
 
       def api_request(path, verb, data = nil)
-        puts @credentials
-        puts ENV['TOKEN']
         #uri = @host path
         verb.downcase!
         auth = Hawk::Client.build_authorization_header(
@@ -101,7 +99,6 @@ module RestoreStrategiesClient
         end
 
         query = query.join('&')
-        puts query
         query
       end
   end
