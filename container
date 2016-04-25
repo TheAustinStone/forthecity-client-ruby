@@ -56,7 +56,7 @@ if [ "$1" = "-t" ]; then
 	docker run --rm -v $PWD:/opt/app -e HOST=$HOST -e PORT=$PORT \
 	-e TOKEN=$TOKEN -e SECRET=$SECRET --link forthecity-api:api \
 	$image_name /bin/bash -c \
-	"bundle exec rspec"
+	"bundle exec rspec; bundle exec rubocop --require rubocop-rspec"
 fi
 
 # --interactive
