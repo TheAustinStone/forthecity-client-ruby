@@ -46,7 +46,6 @@ module RestoreStrategiesClient
                  else
                    http.get(path, header)
                  end
-
       response
     end
 
@@ -98,16 +97,13 @@ module RestoreStrategiesClient
 
       params.each do |key, value|
         if (value.is_a? Hash) || (value.is_a? Array)
-          value.each do |sub_val|
-            query.push(key + '[]=' + CGI.escape(sub_val))
-          end
+          value.each { |sub_val| query.push(key + '[]=' + CGI.escape(sub_val)) }
         else
           query.push(key + '=' + CGI.escape(value))
         end
       end
 
-      query = query.join('&')
-      query
+      query.join('&')
     end
   end
 end
