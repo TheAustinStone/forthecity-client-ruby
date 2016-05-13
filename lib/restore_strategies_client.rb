@@ -2,11 +2,42 @@ require 'restore_strategies_client/version'
 require 'json'
 require 'hawk'
 require 'cgi'
+require 'uri'
+require 'restore_strategies_client/opportunities'
+require 'webmock'
+include WebMock::API
+WebMock.enable!
 
 module RestoreStrategiesClient
+
+  class RSError < StandardError
+  end
+
+  class ResponseError < RSError
+    attr_reader :response
+    def initialize(response, message = nil)
+      message = message or 'Response error with the following code: ' + response.code
+      @response = response
+      super(message)
+    end
+  end
+
+  class Response
+    attr_reader :response, :data
+    def  initialize(response, data = nil)
+      @data = data
+      @response = response
+    end
+  end
+
   # Restore Strategies client
   class Client
+
+    attr_reader :opportunities
+    attr_reader :entry_point
+
     def initialize(token, secret, host = nil, port = nil)
+      @entry_point = '/api'
       @token = token
       @secret = secret
       @host = host
@@ -17,9 +48,11 @@ module RestoreStrategiesClient
         key: @secret,
         algorithm: 'sha256'
       }
+
+      @opportunities = Opportunities.new(self)
     end
 
-    def api_request(path, verb, data = nil)
+    def api_request(path, verb, payload = nil)
       verb.downcase!
 
       auth = Hawk::Client.build_authorization_header(
@@ -29,7 +62,7 @@ module RestoreStrategiesClient
         request_uri: path,
         host: @host,
         port: @port,
-        payload: data,
+        payload: payload,
         nonce: SecureRandom.uuid[0..5]
       )
 
@@ -42,72 +75,117 @@ module RestoreStrategiesClient
       http = Net::HTTP.new(@host, @port)
 
       response = if verb == 'post'
-                   http.post(path, data, header)
+                   http.post(path, payload, header)
                  else
                    http.get(path, header)
                  end
 
-      response
+      unless (response.code == '200' || response.code == '201' || response.code == '202' || response.code == '451') then
+        raise ResponseError.new(response)
+      end
+
+      Response.new response, response.body
     end
 
     def get_opportunity(id)
-      path = '/api/opportunities/' + id.to_s
-      api_request(path, 'GET')
+      params = {'id' => id}
+      response = search(params)
+      json_obj = JSON.parse(response.data)
+      opp = json_obj['collection']['items'][0]
+      if opp.nil?
+        href = json_obj['collection']['href']
+        WebMock::API::stub_request(:get, @host + href).to_return(:status => 404, :body => response.data)
+        http = Net::HTTP.new(@host)
+        response = http.get(href)
+        raise ResponseError.new(response)
+      end
+      response
     end
 
     def list_opportunities
-      href = '/api/opportunities'
+      request = get_entry.data
+      json_obj = JSON.parse(request)['collection']['links']
+      href = get_rel_href('opportunities', json_obj)
       api_request(href, 'GET')
     end
 
     def search(params)
-      href = '/api/search?' + params_to_string(params)
+      params_str = self.class.params_to_string(params)
+      request = get_entry.data
+      json_obj = JSON.parse(request)['collection']['links']
+      href = get_rel_href('search', json_obj) + '?' + params_str
       api_request(href, 'GET')
     end
 
     def get_signup(id)
-      href = '/api/opportunities/' + id.to_s + '/signup'
+      href = get_signup_href(id)
+      return nil if href.nil?
       api_request(href, 'GET')
     end
 
-    def submit_signup(id, template)
-      data = []
-      json_str = '{ "template": { "data": ['
-
-      template.each do |key, value|
-        data.push(build_element(key, value))
-      end
-
-      json_str += data.join(', ') + '] } }'
-      href = '/api/opportunities/' + id.to_s + '/signup'
-
-      api_request(href, 'POST', json_str)
+    def submit_signup(id, payload)
+      href = get_signup_href(id)
+      return nil if href.nil?
+      api_request(href, 'POST', payload)
     end
 
-    def build_element(key, value)
-      if key == 'numOfItemsCommitted'
-        '{ "name": "' + key + '", "value": ' + value.to_s + ' }'
-      else
-        '{ "name": "' + key + '", "value": "' + value + '" }'
-      end
+    def get_entry
+      api_request(self.entry_point, 'GET')
     end
 
-    def params_to_string(params)
+    def get_signup_href(id)
+      request = get_opportunity(id).data
+      json_obj = JSON.parse(request)
+      return nil if json_obj.nil?
+      get_rel_href('signup', json_obj['collection']['items'][0]['links'])
+    end
+
+    def self.params_to_string(params)
       query = []
       return nil unless params.is_a? Hash
 
       params.each do |key, value|
         if (value.is_a? Hash) || (value.is_a? Array)
-          value.each do |sub_val|
-            query.push(key + '[]=' + CGI.escape(sub_val))
+          value.each do |sub_value|
+
+            query.push(key + '[]=' +
+              ((sub_value.is_a? Numeric)? sub_value.to_s : CGI.escape(sub_value)))
           end
         else
-          query.push(key + '=' + CGI.escape(value))
+          query.push(key + '=' +
+            ((value.is_a? Numeric)? value.to_s : CGI.escape(value)))
         end
       end
 
       query = query.join('&')
       query
+    end
+
+    def get_rel_href(rel, json_obj)
+
+      if json_obj.is_a? Array then
+        json_obj.each do |data|
+          href = get_rel_href_helper(rel, data)
+          return href if !href.nil?
+        end
+      else
+        return get_rel_href_helper(rel, json_obj)
+      end
+
+      return nil
+    end
+
+    def get_rel_href_helper(rel, json_obj)
+
+      if json_obj['rel'] == rel then
+        return json_obj['href']
+      end
+
+      return nil
+    end
+
+    def build_mock_response(code, message)
+      Net::HTTP.stub!(:post_form).and_return()
     end
   end
 end

@@ -1,6 +1,7 @@
 require 'net/http'
 require 'spec_helper'
 require 'json'
+require 'webmock'
 
 describe RestoreStrategiesClient do
   let(:client) do
@@ -12,20 +13,29 @@ describe RestoreStrategiesClient do
     )
   end
 
+  before do
+    WebMock.allow_net_connect!
+  end
+
   it 'has a version number' do
     expect(RestoreStrategiesClient::VERSION).not_to be nil
   end
 
   describe 'get_opportunity' do
     it 'responds with 404 code and error when the opportunity doesnt exist' do
-      response = client.get_opportunity(1_000_000)
-      is_true = response.is_a? Net::HTTPNotFound
-      expect(is_true).to be true
+
+      begin
+        response = client.get_opportunity(1_000_000).data
+        puts response
+        fail
+      rescue RestoreStrategiesClient::ResponseError => e
+        expect(e.response.code).to eq('404')
+      end
     end
 
     it 'responds with an opportunity' do
       response = client.get_opportunity(1)
-      response = JSON.parse(response.body)
+      response = JSON.parse(response.data)
       href = response['collection']['items'][0]['href']
       expect(href).to eq('/api/opportunities/1')
     end
@@ -33,8 +43,8 @@ describe RestoreStrategiesClient do
 
   describe 'list_opportunities' do
     it 'responds with a list of opportunities' do
-      response = client.list_opportunities.body
-      response = JSON.parse(response)
+      response = client.list_opportunities
+      response = JSON.parse(response.data)
       expect(response['collection']['href']).to eq('/api/opportunities')
       expect(response['collection']['version']).to eq('1.0')
       expect(response['collection']['items'].is_a?(Array)).to be true
@@ -47,8 +57,8 @@ describe RestoreStrategiesClient do
         'q' => 'foster care'
       }
 
-      response = client.search(params).body
-      response = JSON.parse(response)
+      response = client.search(params)
+      response = JSON.parse(response.data)
 
       expect(response['collection']['href']).to eq('/api/search?q=foster+care')
       expect(response['collection']['version']).to eq('1.0')
@@ -64,8 +74,8 @@ describe RestoreStrategiesClient do
       path = '/api/search?issues[]=Education&issues[]=Children%2FYouth&' \
              'region[]=South&region[]=Central'
 
-      response = client.search(params).body
-      response = JSON.parse(response)
+      response = client.search(params)
+      response = JSON.parse(response.data)
 
       expect(response['collection']['href']).to eq(path)
       expect(response['collection']['version']).to eq('1.0')
@@ -82,8 +92,8 @@ describe RestoreStrategiesClient do
       path = '/api/search?q=foster+care&issues[]=Education&' \
              'issues[]=Children%2FYouth&region[]=South&region[]=Central'
 
-      response = client.search(params).body
-      response = JSON.parse(response)
+      response = client.search(params)
+      response = JSON.parse(response.data)
 
       expect(response['collection']['href']).to eq(path)
       expect(response['collection']['version']).to eq('1.0')
@@ -93,8 +103,8 @@ describe RestoreStrategiesClient do
 
   describe 'get_signup' do
     it 'responds with a signup template' do
-      response = client.get_signup(1).body
-      response = JSON.parse(response)
+      response = client.get_signup(1)
+      response = JSON.parse(response.data)
 
       expect(response['collection']['version']).to eq('1.0')
       expect(response['collection']['template']['data'].is_a?(Array)).to be true
@@ -103,32 +113,47 @@ describe RestoreStrategiesClient do
 
   describe 'submit_signup' do
     it 'responds with a 400 code from a bad signup template' do
-      template = {
-        'familyName' => 'Doe',
-        'telephone' => '5124567890',
-        'email' => 'jon.doe@example.com',
-        'comment' => 'I\'m excited!',
-        'numOfItemsCommitted' => 1,
-        'lead' => 'other'
+      payload = {
+        'template' => {
+          'data' => [
+            { 'name' => 'familyName', 'value' => 'Doe' },
+            { 'name' => 'telephone', 'value' => '5124567890' },
+            { 'name' => 'email', 'value' => 'jon.doe@example.com' },
+            { 'name' => 'comment', 'value' => 'I\'m excited!' },
+            { 'name' => 'numOfItemsCommitted', 'value' => 1 },
+            { 'name' => 'lead', 'value' => 'other' }
+          ]
+        }
       }
 
-      response = client.submit_signup(1, template)
-      expect(response.code).to eq('400')
+      payload = JSON.generate(payload)
+
+      begin
+        response = client.submit_signup(1, payload)
+        fail
+      rescue RestoreStrategiesClient::ResponseError => e
+        expect(e.response.code).to eq('400')
+      end
     end
 
     it 'responds with a 202 code if the signup is accepted' do
-      template = {
-        'givenName' => 'Jon',
-        'familyName' => 'Doe',
-        'telephone' => '5124567890',
-        'email' => 'jon.doe@example.com',
-        'comment' => 'I\'m excited!',
-        'numOfItemsCommitted' => 1,
-        'lead' => 'other'
+      payload = {
+        'template' => {
+          'data' => [
+            { 'name' => 'givenName', 'value' => 'Jon' },
+            { 'name' => 'familyName', 'value' => 'Doe' },
+            { 'name' => 'telephone', 'value' => '5124567890' },
+            { 'name' => 'email', 'value' => 'jon.doe@example.com' },
+            { 'name' => 'comment', 'value' => 'I\'m excited!' },
+            { 'name' => 'numOfItemsCommitted', 'value' => 1 },
+            { 'name' => 'lead', 'value' => 'other' }
+          ]
+        }
       }
 
-      response = client.submit_signup(1, template)
-      expect(response.code).to eq('202')
+      payload = JSON.generate(payload)
+      response = client.submit_signup(1, payload)
+      expect(response.response.code).to eq('202')
     end
   end
 end
