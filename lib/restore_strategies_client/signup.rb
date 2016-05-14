@@ -19,7 +19,7 @@ module RestoreStrategiesClient
     field_attr :given_name, :family_name, :telephone, :email, :comment,
                   :num_of_items_commited, :lead
 
-    def initialize(json_obj, json_str, opportunity, client)
+    def initialize(json_str, opportunity, client)
       super
       @raw = json_str
       @opportunity = opportunity

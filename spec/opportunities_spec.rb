@@ -28,6 +28,7 @@ describe RestoreStrategiesClient do
   end
 
   describe 'get' do
+
     it 'throw an error if there is an issue with the client' do
       opps = RestoreStrategiesClient::Opportunities.new client
 

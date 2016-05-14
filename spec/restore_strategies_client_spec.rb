@@ -26,7 +26,6 @@ describe RestoreStrategiesClient do
 
       begin
         response = client.get_opportunity(1_000_000).data
-        puts response
         fail
       rescue RestoreStrategiesClient::ResponseError => e
         expect(e.response.code).to eq('404')
