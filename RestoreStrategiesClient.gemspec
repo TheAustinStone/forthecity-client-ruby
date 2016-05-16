@@ -6,8 +6,8 @@ require 'restore_strategies_client/version'
 Gem::Specification.new do |spec|
   spec.name          = 'RestoreStrategiesClient'
   spec.version       = RestoreStrategiesClient::VERSION
-  spec.authors       = ['TODO: Write your name']
-  spec.email         = ['TODO: Write your email address']
+  spec.authors       = ['The For the City Network']
+  spec.email         = ['info@forthecity.org']
 
   spec.summary       = 'A Ruby client to the Restore Strategies API'
   spec.homepage      = 'TODO: Put your gem\'s website or public repo URL here.'
@@ -19,13 +19,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'guard'
   spec.add_dependency 'hawk-auth'
   spec.add_dependency 'json'
-  spec.add_dependency 'webmock'
   spec.add_dependency 'activemodel'
   spec.add_dependency 'phoner'
   spec.add_dependency 'email_validator'
+  spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'bundler', '~> 1.11'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
