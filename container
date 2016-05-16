@@ -8,7 +8,7 @@ container_name='forthecity-client-ruby'
 source env.sh
 
 # Build docker image based on Dockerfile, if creating or starting container.
-if [ "$1" = "-c" ] || [ "$1" = "-t" ]; then
+if [ "$1" = "-c" ]; then
 	echo "Building $image_name image..."
 	docker build -t "$image_name" .
 fi

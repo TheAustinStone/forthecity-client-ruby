@@ -84,7 +84,7 @@ module RestoreStrategiesClient
         raise ResponseError.new(response)
       end
 
-      Response.new response, response.body
+      Response.new(response, response.body)
     end
 
     def get_opportunity(id)
