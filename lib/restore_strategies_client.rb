@@ -146,19 +146,14 @@ module RestoreStrategiesClient
 
       params.each do |key, value|
         if (value.is_a? Hash) || (value.is_a? Array)
-          value.each do |sub_value|
-
-            query.push(key + '[]=' +
-              ((sub_value.is_a? Numeric)? sub_value.to_s : CGI.escape(sub_value)))
-          end
+          value.each { |sub_val| query.push(key + '[]=' + CGI.escape(sub_val)) }
         else
           query.push(key + '=' +
             ((value.is_a? Numeric)? value.to_s : CGI.escape(value)))
         end
       end
 
-      query = query.join('&')
-      query
+      query.join('&')
     end
 
     def get_rel_href(rel, json_obj)

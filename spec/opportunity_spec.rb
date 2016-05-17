@@ -2,6 +2,7 @@ require 'net/http'
 require 'spec_helper'
 require 'json'
 require 'opportunities'
+require 'signup'
 require 'webmock'
 
 describe RestoreStrategiesClient do
@@ -10,16 +11,37 @@ describe RestoreStrategiesClient do
     instance_double('RestoreStrategiesClient::Client')
   end
 
+  describe 'self' do
+    it 'all appropriate fields are correct' do
+      opp_raw = RsApi::get_opportunity
+      opp_json = JSON.parse(opp_raw)['collection']['items'][0]
+      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+
+      expect(opp.name).to eq "Example Opportunity"
+      expect(opp.type).to eq "Event"
+      expect(opp.featured).to be true
+      expect(opp.description).to eq "This is an example of what you could say here."
+      expect(opp.location).to eq ""
+      expect(opp.items_committed).to be 1
+      expect(opp.items_given).to be 3
+      expect(opp.max_items_needed).to be 12
+      expect(opp.ongoing).to be true
+      expect(opp.organization).to eq "Volunteer Inc."
+      expect(opp.instructions).to eq "Be there at 8am."
+      expect(opp.gift_question).to eq "How many cans?"
+    end
+  end
+
   describe 'get_signup' do
     it 'get a signup object' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, opp_raw, client
+      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
 
-      allow(client).to receive(:get_signup).
+      allow(client).to receive(:get_signup).with(11).
         and_return(RsApi::get_signup)
 
-      signup = opp.get_signup 1
+      signup = opp.get_signup
       expect(signup).to be_a(RestoreStrategiesClient::Signup)
     end
   end
@@ -28,17 +50,46 @@ describe RestoreStrategiesClient do
     it 'throw an error if the object put in is not a signup object' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, opp_raw, client
+      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
 
-      expect(opp.submit_signup {}).to raise_error(TypeError)
+      expect{opp.submit_signup 1}.to raise_error(TypeError)
+    end
+
+    it 'should throw an error if the signup data is not valid' do
+      opp_raw = RsApi::get_opportunity
+      opp_json = JSON.parse(opp_raw)['collection']['items'][0]
+      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+
+      allow(client).to receive(:get_signup).with(11).
+        and_return(RsApi::get_signup)
+
+      signup = opp.get_signup
+
+      expect{opp.submit_signup signup}.to raise_error(RestoreStrategiesClient::SignupValidationError)
     end
 
     it 'submit successfully' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, opp_raw, client
+      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
 
-      expect(client).to recieve(:submit_signup)
+      allow(client).to receive(:get_signup).with(11).
+        and_return(RsApi::get_signup)
+
+      expect(client).to receive(:submit_signup)
+
+      signup = opp.get_signup
+      signup.given_name = "John"
+      signup.family_name = "Doe"
+      signup.telephone = "5125419812"
+      signup.email = "john.doe@email.com"
+      signup.comment = ""
+      signup.num_of_items_commited = 2
+      signup.lead = ""
+
+      signup.valid?
+
+      opp.submit_signup signup
     end
   end
 end

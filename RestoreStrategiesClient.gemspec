@@ -12,14 +12,13 @@ Gem::Specification.new do |spec|
   spec.summary       = 'A Ruby client to the Restore Strategies API'
   spec.homepage      = 'TODO: Put your gem\'s website or public repo URL here.'
 
-  spec.files         = `git ls-files -z`.split('\x0').reject do |f|
+  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-
-  spec.add_development_dependency 'guard'
+  
   spec.add_dependency 'hawk-auth'
   spec.add_dependency 'json'
   spec.add_dependency 'webmock'
