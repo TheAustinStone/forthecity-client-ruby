@@ -84,7 +84,7 @@ module RestoreStrategiesClient
         raise ResponseError.new(response)
       end
 
-      Response.new response, response.body
+      Response.new(response, response.body)
     end
 
     def get_opportunity(id)
@@ -146,14 +146,19 @@ module RestoreStrategiesClient
 
       params.each do |key, value|
         if (value.is_a? Hash) || (value.is_a? Array)
-          value.each { |sub_val| query.push(key + '[]=' + CGI.escape(sub_val)) }
+          value.each do |sub_value|
+
+            query.push(key + '[]=' +
+              ((sub_value.is_a? Numeric)? sub_value.to_s : CGI.escape(sub_value)))
+          end
         else
           query.push(key + '=' +
             ((value.is_a? Numeric)? value.to_s : CGI.escape(value)))
         end
       end
 
-      query.join('&')
+      query = query.join('&')
+      query
     end
 
     def get_rel_href(rel, json_obj)
