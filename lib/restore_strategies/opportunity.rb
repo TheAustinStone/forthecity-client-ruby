@@ -27,6 +27,19 @@ module RestoreStrategies
       end
     end
 
+    def self.find(id)
+      unless id.is_a? Integer
+        raise ArgumentError, 'id must be integer'
+      end
+
+      api_response = RestoreStrategies.client.get_opportunity(id)
+
+      if api_response.response.code.to_i == 200
+        json = JSON.parse(api_response.data)['collection']['items'][0]
+        Opportunity.new(json, api_response.data, nil)
+      end
+    end
+
     def get_signup
       signup_str = client.get_signup id
       RestoreStrategies::Signup.new(signup_str, self, client, id)
