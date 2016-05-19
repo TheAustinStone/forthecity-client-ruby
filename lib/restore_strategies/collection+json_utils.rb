@@ -8,8 +8,8 @@ module RestoreStrategies
 
       postable.post_fields.each do |field|
         data.push build_element(
-          field.id2name.camelize(:lower),
-          field
+          field.id2name,
+          postable.send(field)
         )
       end
 
@@ -17,11 +17,11 @@ module RestoreStrategies
     end
 
     def self.build_element(key, value)
-      { 'name' => key.underscore, 'value' => value }
+      { 'name' => key.camelize(:lower), 'value' => value }
     end
 
     def self.parse_element(json)
-      { json['name'].camelize(:lower)=>json['value'] }
+      { json['name'].underscore => json['value'] }
     end
   end
 
@@ -32,7 +32,7 @@ module RestoreStrategies
     attr_reader :post_fields
 
     def field_attr(*args)
-      @post_fields = @post_fields || []
+      @post_fields ||= []
       args.each do |arg|
         @post_fields.push arg
       end

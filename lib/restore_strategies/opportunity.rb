@@ -36,7 +36,6 @@ module RestoreStrategies
       raise TypeError unless signup.is_a? Signup
       raise SignupValidationError,
             'Signup does not contain valid data' unless signup.valid?
-
       client.submit_signup(id, signup.to_payload)
     end
   end
