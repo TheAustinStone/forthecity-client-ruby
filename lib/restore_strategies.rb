@@ -50,6 +50,7 @@ module RestoreStrategies
       }
 
       @opportunities = Opportunities.new(self)
+      RestoreStrategies::Opportunity.client = self
     end
 
     def api_request(path, verb, payload = nil)
