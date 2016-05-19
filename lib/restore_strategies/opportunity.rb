@@ -7,8 +7,6 @@ module RestoreStrategies
     include ActiveModel::Validations
     include ActiveModel::Conversion
 
-    @@client = nil
-
     attr_reader :raw, :client, :id, :name, :type, :featured, :description,
                 :location, :items_committed, :items_given, :max_items_needed,
                 :ongoing, :organization, :instructions, :gift_question, :days,
@@ -27,14 +25,6 @@ module RestoreStrategies
       json_obj['links'].each do |link|
         @signup_href = link['href'] if link['rel'] == 'signup'
       end
-    end
-
-    def self.client=(client)
-      @@client
-    end
-
-    def self.client
-      @@client
     end
 
     def get_signup

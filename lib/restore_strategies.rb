@@ -1,14 +1,24 @@
-require 'restore_strategies/version'
+require_relative'restore_strategies/version'
 require 'json'
 require 'hawk'
 require 'cgi'
 require 'uri'
-require 'restore_strategies/opportunities'
+require_relative'restore_strategies/opportunities'
 require 'webmock'
 include WebMock::API
 WebMock.enable!
 
 module RestoreStrategies
+
+  @@client = nil
+
+  def self.client=(client)
+    @@client = client
+  end
+
+  def self.client
+    @@client
+  end
 
   class RSError < StandardError
   end
@@ -50,7 +60,7 @@ module RestoreStrategies
       }
 
       @opportunities = Opportunities.new(self)
-      RestoreStrategies::Opportunity.client = self
+      RestoreStrategies.client = self
     end
 
     def api_request(path, verb, payload = nil)
