@@ -7,6 +7,7 @@ require_relative'restore_strategies/opportunities'
 require 'webmock'
 include WebMock::API
 WebMock.enable!
+WebMock.allow_net_connect!
 
 module RestoreStrategies
 

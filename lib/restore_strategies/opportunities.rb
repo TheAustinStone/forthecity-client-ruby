@@ -11,17 +11,17 @@ module RestoreStrategies
     end
 
     def get_all
-      response = client.list_opportunities
+      response = client.list_opportunities.data
       init_opps response
     end
 
     def get(id)
-      json_str = client.get_opportunity(id)
+      json_str = client.get_opportunity(id).data
       init_opps(json_str)[0]
     end
 
     def search(params)
-      json_str = client.search(params)
+      json_str = client.search(params).data
       init_opps json_str
     end
 
@@ -32,7 +32,7 @@ module RestoreStrategies
         opps = []
 
         items.each do |item|
-          opps.push Opportunity.new(item, json_str, :client)
+          opps.push Opportunity.new(item, json_str, client)
         end
 
         opps

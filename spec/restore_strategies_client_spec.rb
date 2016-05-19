@@ -1,7 +1,6 @@
 require 'net/http'
 require 'spec_helper'
 require 'json'
-require 'webmock'
 
 describe RestoreStrategies do
   let(:client) do
