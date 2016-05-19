@@ -4,15 +4,15 @@ require 'json'
 require 'opportunities'
 require 'webmock'
 
-describe RestoreStrategiesClient do
+describe RestoreStrategies do
 
   let(:client) do
-    instance_double('RestoreStrategiesClient::Client')
+    instance_double('RestoreStrategies::Client')
   end
 
   describe 'get_all' do
     it 'return an array of Opportunity objects' do
-      opps = RestoreStrategiesClient::Opportunities.new client
+      opps = RestoreStrategies::Opportunities.new client
 
       allow(client).to receive(:list_opportunities).
         and_return(RsApi::list_opportunities)
@@ -22,7 +22,7 @@ describe RestoreStrategiesClient do
       expect(oppsArray.size).to eq 2
 
       oppsArray.each do |opp|
-        expect(opp).to be_an_instance_of(RestoreStrategiesClient::Opportunity)
+        expect(opp).to be_an_instance_of(RestoreStrategies::Opportunity)
       end
     end
   end
@@ -30,55 +30,55 @@ describe RestoreStrategiesClient do
   describe 'get' do
 
     it 'throw an error if there is an issue with the client' do
-      opps = RestoreStrategiesClient::Opportunities.new client
+      opps = RestoreStrategies::Opportunities.new client
 
       WebMock::API::stub_request(:any, "localhost").to_return(:status => 400, :body => "")
       http = Net::HTTP.new("localhost")
       response = http.get("/")
 
       expect(client).to receive(:get_opportunity).with(11).
-        and_raise(RestoreStrategiesClient::ResponseError.new(response))
+        and_raise(RestoreStrategies::ResponseError.new(response))
 
       begin
         opps.get 11
         fail
-      rescue RestoreStrategiesClient::ResponseError => e
+      rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('400')
       end
     end
 
     it 'return null if the opportunity doesn\'t exist' do
-      opps = RestoreStrategiesClient::Opportunities.new client
+      opps = RestoreStrategies::Opportunities.new client
 
       WebMock::API::stub_request(:any, "localhost").to_return(:status => 404, :body => "")
       http = Net::HTTP.new("localhost")
       response = http.get("/")
 
       expect(client).to receive(:get_opportunity).with(1_000_000).
-        and_raise(RestoreStrategiesClient::ResponseError.new(response))
+        and_raise(RestoreStrategies::ResponseError.new(response))
 
       begin
         opps.get 1_000_000
         fail
-      rescue RestoreStrategiesClient::ResponseError => e
+      rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('404')
       end
     end
 
     it 'return an Opportunity object' do
-      opps = RestoreStrategiesClient::Opportunities.new client
+      opps = RestoreStrategies::Opportunities.new client
 
       expect(client).to receive(:get_opportunity).with(1).
         and_return(RsApi::get_opportunity)
 
       opp = opps.get 1
-      expect(opp).to be_an_instance_of(RestoreStrategiesClient::Opportunity)
+      expect(opp).to be_an_instance_of(RestoreStrategies::Opportunity)
     end
   end
 
   describe 'search' do
     it 'return an Opportunity object' do
-      opps = RestoreStrategiesClient::Opportunities.new client
+      opps = RestoreStrategies::Opportunities.new client
 
       expect(client).to receive(:search).with({'name' => 'Example Opportunity'}).
         and_return(RsApi::get_opportunity)
@@ -87,7 +87,7 @@ describe RestoreStrategiesClient do
       oppsList = opps.search params
       expect(oppsList).to be_an(Array)
       expect(oppsList.size).to be 1
-      expect(oppsList[0]).to be_an_instance_of(RestoreStrategiesClient::Opportunity)
+      expect(oppsList[0]).to be_an_instance_of(RestoreStrategies::Opportunity)
     end
   end
 end

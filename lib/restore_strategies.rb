@@ -1,14 +1,14 @@
-require 'restore_strategies_client/version'
+require 'restore_strategies/version'
 require 'json'
 require 'hawk'
 require 'cgi'
 require 'uri'
-require 'restore_strategies_client/opportunities'
+require 'restore_strategies/opportunities'
 require 'webmock'
 include WebMock::API
 WebMock.enable!
 
-module RestoreStrategiesClient
+module RestoreStrategies
 
   class RSError < StandardError
   end

@@ -1,6 +1,6 @@
 require_relative 'signup'
 
-module RestoreStrategiesClient
+module RestoreStrategies
   # Objectification of the API's opportunity
   class Opportunity
     include ActiveModel::Model
@@ -29,7 +29,7 @@ module RestoreStrategiesClient
 
     def get_signup
       signup_str = client.get_signup id
-      RestoreStrategiesClient::Signup.new(signup_str, self, client, id)
+      RestoreStrategies::Signup.new(signup_str, self, client, id)
     end
 
     def submit_signup(signup)

@@ -3,9 +3,9 @@ require 'spec_helper'
 require 'json'
 require 'webmock'
 
-describe RestoreStrategiesClient do
+describe RestoreStrategies do
   let(:client) do
-    RestoreStrategiesClient::Client.new(
+    RestoreStrategies::Client.new(
       ENV['TOKEN'],
       ENV['SECRET'],
       ENV['HOST'],
@@ -18,7 +18,7 @@ describe RestoreStrategiesClient do
   end
 
   it 'has a version number' do
-    expect(RestoreStrategiesClient::VERSION).not_to be nil
+    expect(RestoreStrategies::VERSION).not_to be nil
   end
 
   describe 'get_opportunity' do
@@ -27,7 +27,7 @@ describe RestoreStrategiesClient do
       begin
         response = client.get_opportunity(1_000_000).data
         fail
-      rescue RestoreStrategiesClient::ResponseError => e
+      rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('404')
       end
     end
@@ -130,7 +130,7 @@ describe RestoreStrategiesClient do
       begin
         response = client.submit_signup(1, payload)
         fail
-      rescue RestoreStrategiesClient::ResponseError => e
+      rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('400')
       end
     end

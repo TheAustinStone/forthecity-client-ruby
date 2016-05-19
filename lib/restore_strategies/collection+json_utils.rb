@@ -1,6 +1,6 @@
 require 'json'
 
-module RestoreStrategiesClient
+module RestoreStrategies
   class CollectionJson
     def self.build_template(postable)
       return nil unless postable.post_fields

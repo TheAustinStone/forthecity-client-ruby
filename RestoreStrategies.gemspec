@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'restore_strategies_client/version'
+require 'restore_strategies/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'RestoreStrategiesClient'
-  spec.version       = RestoreStrategiesClient::VERSION
+  spec.name          = 'RestoreStrategies'
+  spec.version       = RestoreStrategies::VERSION
   spec.authors       = ['The For the City Network']
   spec.email         = ['info@forthecity.org']
 

@@ -4,13 +4,13 @@ require_relative '../validators/phone_validator.rb'
 require 'email_validator'
 require 'phoner'
 
-module RestoreStrategiesClient
+module RestoreStrategies
 
   class Signup
     include ActiveModel::Model
     include ActiveModel::Validations
     include ActiveModel::Conversion
-    include RestoreStrategiesClient::POSTing
+    include RestoreStrategies::POSTing
 
     attr_reader :raw, :client, :opportunity, :id
 

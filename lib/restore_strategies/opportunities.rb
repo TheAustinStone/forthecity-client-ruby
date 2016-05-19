@@ -1,6 +1,6 @@
 require_relative 'opportunity'
 
-module RestoreStrategiesClient
+module RestoreStrategies
 
   class Opportunities
 

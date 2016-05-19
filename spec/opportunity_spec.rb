@@ -5,17 +5,17 @@ require 'opportunities'
 require 'signup'
 require 'webmock'
 
-describe RestoreStrategiesClient do
+describe RestoreStrategies do
 
   let(:client) do
-    instance_double('RestoreStrategiesClient::Client')
+    instance_double('RestoreStrategies::Client')
   end
 
   describe 'self' do
     it 'all appropriate fields are correct' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+      opp = RestoreStrategies::Opportunity.new opp_json, JSON.generate(opp_json), client
 
       expect(opp.name).to eq "Example Opportunity"
       expect(opp.type).to eq "Event"
@@ -36,13 +36,13 @@ describe RestoreStrategiesClient do
     it 'get a signup object' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+      opp = RestoreStrategies::Opportunity.new opp_json, JSON.generate(opp_json), client
 
       allow(client).to receive(:get_signup).with(11).
         and_return(RsApi::get_signup)
 
       signup = opp.get_signup
-      expect(signup).to be_a(RestoreStrategiesClient::Signup)
+      expect(signup).to be_a(RestoreStrategies::Signup)
     end
   end
 
@@ -50,7 +50,7 @@ describe RestoreStrategiesClient do
     it 'throw an error if the object put in is not a signup object' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+      opp = RestoreStrategies::Opportunity.new opp_json, JSON.generate(opp_json), client
 
       expect{opp.submit_signup 1}.to raise_error(TypeError)
     end
@@ -58,20 +58,20 @@ describe RestoreStrategiesClient do
     it 'should throw an error if the signup data is not valid' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+      opp = RestoreStrategies::Opportunity.new opp_json, JSON.generate(opp_json), client
 
       allow(client).to receive(:get_signup).with(11).
         and_return(RsApi::get_signup)
 
       signup = opp.get_signup
 
-      expect{opp.submit_signup signup}.to raise_error(RestoreStrategiesClient::SignupValidationError)
+      expect{opp.submit_signup signup}.to raise_error(RestoreStrategies::SignupValidationError)
     end
 
     it 'submit successfully' do
       opp_raw = RsApi::get_opportunity
       opp_json = JSON.parse(opp_raw)['collection']['items'][0]
-      opp = RestoreStrategiesClient::Opportunity.new opp_json, JSON.generate(opp_json), client
+      opp = RestoreStrategies::Opportunity.new opp_json, JSON.generate(opp_json), client
 
       allow(client).to receive(:get_signup).with(11).
         and_return(RsApi::get_signup)

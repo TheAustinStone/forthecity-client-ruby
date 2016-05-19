@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'restore_strategies_client'
+require 'restore_strategies'
 require 'unit_helper'
 require 'webmock/rspec'
 
