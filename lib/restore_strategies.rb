@@ -9,33 +9,36 @@ include WebMock::API
 WebMock.enable!
 WebMock.allow_net_connect!
 
+# Restore Strategies module
 module RestoreStrategies
-
-  @@client = nil
+  @client = nil
 
   def self.client=(client)
-    @@client = client
+    @client = client
   end
 
   def self.client
-    @@client
+    @client
   end
 
   class RSError < StandardError
   end
 
+  # Response error class
   class ResponseError < RSError
     attr_reader :response
     def initialize(response, message = nil)
-      message = message or 'Response error with the following code: ' + response.code
+      message ||= 'Response error with the following code: ' + response.code
+
       @response = response
       super(message)
     end
   end
 
+  # HTTP response
   class Response
     attr_reader :response, :data
-    def  initialize(response, data = nil)
+    def initialize(response, data = nil)
       @data = data
       @response = response
     end
@@ -43,7 +46,6 @@ module RestoreStrategies
 
   # Restore Strategies client
   class Client
-
     attr_reader :opportunities
     attr_reader :entry_point
 
@@ -92,24 +94,34 @@ module RestoreStrategies
                    http.get(path, header)
                  end
 
-      unless (response.code == '200' || response.code == '201' || response.code == '202' || response.code == '451') then
-        raise ResponseError.new(response)
+      code = response.code
+
+      successful_response = code == '200' ||
+                            code == '201' ||
+                            code == '202' ||
+                            code == '451'
+
+      unless successful_response
+        raise ResponseError.new(response), "Response error code #{code}"
       end
 
       Response.new(response, response.body)
     end
 
     def get_opportunity(id)
-      params = {'id' => id}
+      params = { 'id' => id }
       response = search(params)
       json_obj = JSON.parse(response.data)
       opp = json_obj['collection']['items'][0]
       if opp.nil?
         href = json_obj['collection']['href']
-        WebMock::API::stub_request(:get, @host + href).to_return(:status => 404, :body => response.data)
+        
+        WebMock::API.stub_request(:get, @host + href)
+                    .to_return(status: 404, body: response.data)
+
         http = Net::HTTP.new(@host)
         response = http.get(href)
-        raise ResponseError.new(response)
+        raise ResponseError.new(response), 'Opportunity not found'
       end
       response
     end
@@ -142,7 +154,7 @@ module RestoreStrategies
     end
 
     def get_entry
-      api_request(self.entry_point, 'GET')
+      api_request(entry_point, 'GET')
     end
 
     def get_signup_href(id)
@@ -159,45 +171,41 @@ module RestoreStrategies
       params.each do |key, value|
         if (value.is_a? Hash) || (value.is_a? Array)
           value.each do |sub_value|
+            value = if sub_value.is_a? Numeric
+                      sub_value.to_s
+                    else
+                      CGI.escape(sub_value)
+                    end
 
-            query.push(key + '[]=' +
-              ((sub_value.is_a? Numeric)? sub_value.to_s : CGI.escape(sub_value)))
+            query.push(key + '[]=' + value)
           end
         else
           query.push(key + '=' +
-            ((value.is_a? Numeric)? value.to_s : CGI.escape(value)))
+            ((value.is_a? Numeric) ? value.to_s : CGI.escape(value)))
         end
       end
 
-      query = query.join('&')
-      query
+      query.join('&')
     end
 
     def get_rel_href(rel, json_obj)
+      return get_rel_href_helper(rel, json_obj) unless json_obj.is_a? Array
 
-      if json_obj.is_a? Array then
-        json_obj.each do |data|
-          href = get_rel_href_helper(rel, data)
-          return href if !href.nil?
-        end
-      else
-        return get_rel_href_helper(rel, json_obj)
+      json_obj.each do |data|
+        href = get_rel_href_helper(rel, data)
+        return href unless href.nil?
       end
 
-      return nil
+      nil
     end
 
     def get_rel_href_helper(rel, json_obj)
-
-      if json_obj['rel'] == rel then
-        return json_obj['href']
-      end
-
-      return nil
+      return json_obj['href'] if json_obj['rel'] == rel
+      nil
     end
 
-    def build_mock_response(code, message)
-      Net::HTTP.stub!(:post_form).and_return()
+    def build_mock_response
+      Net::HTTP.stub!(:post_form).and_return
     end
   end
 end
