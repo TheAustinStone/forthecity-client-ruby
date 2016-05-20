@@ -16,6 +16,6 @@
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
 guard :rspec, cmd: 'bundle exec rspec' do
-    watch(%r{^lib/(.+)\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
-    watch('spec/RestoreStrategiesClient_spec.rb')
+  watch(%r{^lib/(.+)\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
+  watch('spec/RestoreStrategiesClient_spec.rb')
 end
