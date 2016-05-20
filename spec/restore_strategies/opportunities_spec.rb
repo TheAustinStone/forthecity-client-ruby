@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'json'
 require 'opportunities'
 
-describe RestoreStrategies do
+describe RestoreStrategies::Opportunities do
   let(:client) do
     RestoreStrategies::Client.new(
       ENV['TOKEN'],
@@ -14,7 +14,7 @@ describe RestoreStrategies do
   end
 
   let(:opps) do
-    RestoreStrategies::Opportunities.new client
+    described_class.new client
   end
 
   describe 'get_all' do
@@ -32,7 +32,6 @@ describe RestoreStrategies do
     it 'return null if the opportunity doesn\'t exist' do
       begin
         opps.get 1_000_000
-        fail
       rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('404')
       end

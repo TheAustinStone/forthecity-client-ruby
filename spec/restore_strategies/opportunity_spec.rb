@@ -23,22 +23,20 @@ describe RestoreStrategies::Opportunity do
   end
 
   describe 'find' do
-    it 'should find an opporunity from id' do
-      opportunity = RestoreStrategies::Opportunity.find(1)
-      expect(opportunity).to be_a(RestoreStrategies::Opportunity)
+    it 'finds an opporunity from id' do
+      opportunity = described_class.find(1)
+      expect(opportunity).to be_a(described_class)
       expect(opportunity.id.to_i).to be(1)
     end
 
-    it 'should throw error if id is not integer' do
-      expect{
-        RestoreStrategies::Opportunity.find('1')
-      }.to raise_error(ArgumentError, 'id must be integer')
+    it 'throws error if id is not integer' do
+      expect { described_class.find('1') }
+        .to raise_error(ArgumentError, 'id must be integer')
     end
 
-    it 'should throw error if id is not found'
+    it 'throws error if id is not found'
   end
 
-  
   describe 'get_signup' do
     it 'gets a signup object' do
       signup = opp.get_signup

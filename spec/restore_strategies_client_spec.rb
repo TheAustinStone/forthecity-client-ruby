@@ -22,10 +22,8 @@ describe RestoreStrategies do
 
   describe 'get_opportunity' do
     it 'responds with 404 code and error when the opportunity doesnt exist' do
-
       begin
-        response = client.get_opportunity(1_000_000).data
-        fail
+        client.get_opportunity(1_000_000).data
       rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('404')
       end
@@ -127,8 +125,7 @@ describe RestoreStrategies do
       payload = JSON.generate(payload)
 
       begin
-        response = client.submit_signup(1, payload)
-        fail
+        client.submit_signup(1, payload)
       rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('400')
       end
