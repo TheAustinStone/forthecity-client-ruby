@@ -12,10 +12,6 @@ describe RestoreStrategies do
     )
   end
 
-  before do
-    WebMock.allow_net_connect!
-  end
-
   it 'has a version number' do
     expect(RestoreStrategies::VERSION).not_to be nil
   end
