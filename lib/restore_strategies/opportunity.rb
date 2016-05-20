@@ -13,9 +13,8 @@ module RestoreStrategies
                 :ongoing, :organization, :instructions, :gift_question, :days,
                 :group_type, :issues, :region, :supplies, :skills
 
-    def initialize(json_obj, json_str, client)
+    def initialize(json_obj, json_str)
       @raw = json_str
-      @client = client
       # TODO: Find a better way of capturing the ID
       @id = json_obj['href'][%r{[^(\/api\/opportunities\/)].}].to_i
 
@@ -37,7 +36,7 @@ module RestoreStrategies
       case code
       when 200
         json = JSON.parse(api_response.data)['collection']['items'][0]
-        Opportunity.new(json, api_response.data, nil)
+        Opportunity.new(json, api_response.data)
       when 404
         raise NotFoundError.new(api_response, 'Opportunity not found')
       end
@@ -52,7 +51,7 @@ module RestoreStrategies
       raise TypeError unless signup.is_a? Signup
       raise SignupValidationError,
             'Signup does not contain valid data' unless signup.valid?
-      client.submit_signup(id, signup.to_payload)
+      RestoreStrategies.client.submit_signup(id, signup.to_payload)
     end
   end
 end
