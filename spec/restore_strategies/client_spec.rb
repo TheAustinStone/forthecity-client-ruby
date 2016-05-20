@@ -2,9 +2,9 @@ require 'net/http'
 require 'spec_helper'
 require 'json'
 
-describe RestoreStrategies do
+describe RestoreStrategies::Client do
   let(:client) do
-    RestoreStrategies::Client.new(
+    described_class.new(
       ENV['TOKEN'],
       ENV['SECRET'],
       ENV['HOST'],
