@@ -83,18 +83,12 @@ module RestoreStrategies
     end
 
     def list_opportunities
-      request = get_entry.data
-      json_obj = JSON.parse(request)['collection']['links']
-      href = get_rel_href('opportunities', json_obj)
-      api_request(href, 'GET')
+      api_request('/api/opportunities', 'GET')
     end
 
     def search(params)
       params_str = self.class.params_to_string(params)
-      request = get_entry.data
-      json_obj = JSON.parse(request)['collection']['links']
-      href = get_rel_href('search', json_obj) + '?' + params_str
-      api_request(href, 'GET')
+      api_request("/api/search?#{params_str}", 'GET')
     end
 
     def get_signup(id)
@@ -107,10 +101,6 @@ module RestoreStrategies
       href = get_signup_href(id)
       return nil if href.nil?
       api_request(href, 'POST', payload)
-    end
-
-    def get_entry
-      api_request(entry_point, 'GET')
     end
 
     def get_signup_href(id)
