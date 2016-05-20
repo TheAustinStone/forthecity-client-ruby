@@ -1,4 +1,5 @@
 require_relative 'signup'
+require_relative'error'
 
 module RestoreStrategies
   # Objectification of the API's opportunity
@@ -31,15 +32,19 @@ module RestoreStrategies
       raise ArgumentError, 'id must be integer' unless id.is_a? Integer
 
       api_response = RestoreStrategies.client.get_opportunity(id)
+      code = api_response.response.code.to_i
 
-      if api_response.response.code.to_i == 200
+      case code
+      when 200
         json = JSON.parse(api_response.data)['collection']['items'][0]
         Opportunity.new(json, api_response.data, nil)
+      when 404
+        raise NotFoundError.new(api_response, 'Opportunity not found')
       end
     end
 
     def get_signup
-      signup_str = client.get_signup id
+      signup_str = RestoreStrategies.client.get_signup id
       RestoreStrategies::Signup.new(signup_str, self, client, id)
     end
 

@@ -1,7 +1,6 @@
 require 'net/http'
 require 'spec_helper'
 require 'json'
-require 'opportunities'
 require 'signup'
 
 describe RestoreStrategies::Opportunity do
@@ -14,12 +13,8 @@ describe RestoreStrategies::Opportunity do
     )
   end
 
-  let(:opps) do
-    RestoreStrategies::Opportunities.new client
-  end
-
   let(:opp) do
-    opps.get 1
+    described_class.find(1)
   end
 
   describe 'find' do
@@ -34,11 +29,16 @@ describe RestoreStrategies::Opportunity do
         .to raise_error(ArgumentError, 'id must be integer')
     end
 
-    it 'throws error if id is not found'
+    it 'throws error if id is not found' do
+      expect { described_class.find(99_999) }
+        .to raise_error(RestoreStrategies::NotFoundError)
+    end
   end
 
   describe 'get_signup' do
     it 'gets a signup object' do
+      opp = described_class.find(1)
+      # puts opp.inspect
       signup = opp.get_signup
       expect(signup).to be_a(RestoreStrategies::Signup)
     end

@@ -3,11 +3,8 @@ require 'json'
 require 'hawk'
 require 'cgi'
 require 'uri'
-require_relative'restore_strategies/opportunities'
-require 'webmock'
-include WebMock::API
-WebMock.enable!
-WebMock.allow_net_connect!
+require_relative'restore_strategies/error'
+require_relative'restore_strategies/opportunity'
 
 # Restore Strategies module
 module RestoreStrategies
@@ -21,20 +18,6 @@ module RestoreStrategies
     @client
   end
 
-  class RSError < StandardError
-  end
-
-  # Response error class
-  class ResponseError < RSError
-    attr_reader :response
-    def initialize(response, message = nil)
-      message ||= 'Response error with the following code: ' + response.code
-
-      @response = response
-      super(message)
-    end
-  end
-
   # HTTP response
   class Response
     attr_reader :response, :data
@@ -46,7 +29,6 @@ module RestoreStrategies
 
   # Restore Strategies client
   class Client
-    attr_reader :opportunities
     attr_reader :entry_point
 
     def initialize(token, secret, host = nil, port = nil)
@@ -62,7 +44,6 @@ module RestoreStrategies
         algorithm: 'sha256'
       }
 
-      @opportunities = Opportunities.new(self)
       RestoreStrategies.client = self
     end
 
@@ -96,34 +77,37 @@ module RestoreStrategies
 
       code = response.code
 
-      successful_response = code == '200' ||
-                            code == '201' ||
-                            code == '202' ||
-                            code == '451'
-
-      unless successful_response
-        raise ResponseError.new(response), "Response error code #{code}"
+      case code
+      when '500'
+        # internal server error
+        raise InternalServerError.new(response), '500 internal server error'
+      when /^5/
+        # 5xx server side error
+        raise ServerError.new(response), '5xx level, server side error'
+      when '400'
+        # bad request
+        raise RequestError.new(response), '400 error, bad request'
+      when '401'
+        # unauthorized
+        raise UnauthorizedError.new(response), '401 error, unauthorized'
+      when '403'
+        # forbidden
+        raise ForbiddenError.new(response), '403 error, forbidden'
+      when '404'
+        # not found
+        # pass thru 404 errors so the caller can handle them
+        Response.new(response, response.body)
+      when /^4/
+        # 4xx client side error
+        raise ClientError.new(response, "client side #{code} error"),
+              "client side #{code} error"
+      else
+        Response.new(response, response.body)
       end
-
-      Response.new(response, response.body)
     end
 
     def get_opportunity(id)
-      params = { 'id' => id }
-      response = search(params)
-      json_obj = JSON.parse(response.data)
-      opp = json_obj['collection']['items'][0]
-      if opp.nil?
-        href = json_obj['collection']['href']
-
-        WebMock::API.stub_request(:get, @host + href)
-                    .to_return(status: 404, body: response.data)
-
-        http = Net::HTTP.new(@host)
-        response = http.get(href)
-        raise ResponseError.new(response), 'Opportunity not found'
-      end
-      response
+      api_request("/api/opportunities/#{id}", 'GET')
     end
 
     def list_opportunities
@@ -202,10 +186,6 @@ module RestoreStrategies
     def get_rel_href_helper(rel, json_obj)
       return json_obj['href'] if json_obj['rel'] == rel
       nil
-    end
-
-    def build_mock_response
-      Net::HTTP.stub!(:post_form).and_return
     end
   end
 end
