@@ -5,7 +5,7 @@ require 'email_validator'
 require 'phoner'
 
 module RestoreStrategies
-
+  # Signup class
   class Signup
     include ActiveModel::Model
     include ActiveModel::Validations
@@ -16,13 +16,11 @@ module RestoreStrategies
 
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
                   :num_of_items_committed, :lead
-    validates_length_of :given_name, {minimum: 2}
-    validates_length_of :given_name, {minimum: 2}
-    validates :email, :email => true
-    validates :telephone, :phone => true
 
-    #field_attr :given_name, :family_name, :telephone, :email, :comment,
-    #              :num_of_items_committed, :lead
+    validates_length_of :given_name, minimum: 2
+    validates_length_of :given_name, minimum: 2
+    validates :email, email: true
+    validates :telephone, phone: true
 
     def initialize(json_str, opportunity, client, id)
       @raw = json_str
@@ -30,7 +28,7 @@ module RestoreStrategies
       @client = client
       @id = id
       field_attr :given_name, :family_name, :telephone, :email, :comment,
-                    :num_of_items_committed, :lead
+                 :num_of_items_committed, :lead
     end
   end
 

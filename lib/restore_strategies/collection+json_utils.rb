@@ -1,6 +1,7 @@
 require 'json'
 
 module RestoreStrategies
+  # Collection+JSON untilities
   class CollectionJson
     def self.build_template(postable)
       return nil unless postable.post_fields
@@ -13,7 +14,7 @@ module RestoreStrategies
         )
       end
 
-      json_obj = { 'template' => {'data' => data } }
+      { 'template' => { 'data' => data } }
     end
 
     def self.build_element(key, value)
@@ -28,7 +29,6 @@ module RestoreStrategies
   # Mixin for creating a POSTable representation of
   # data to the api
   module POSTing
-
     attr_reader :post_fields
 
     def field_attr(*args)

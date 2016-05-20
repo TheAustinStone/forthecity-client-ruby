@@ -28,9 +28,7 @@ module RestoreStrategies
     end
 
     def self.find(id)
-      unless id.is_a? Integer
-        raise ArgumentError, 'id must be integer'
-      end
+      raise ArgumentError, 'id must be integer' unless id.is_a? Integer
 
       api_response = RestoreStrategies.client.get_opportunity(id)
 

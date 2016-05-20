@@ -1,9 +1,8 @@
 require_relative 'opportunity'
 
 module RestoreStrategies
-
+  # Opportunities class
   class Opportunities
-
     attr_reader :client
 
     def initialize(client)
@@ -26,16 +25,17 @@ module RestoreStrategies
     end
 
     private
-      def init_opps(json_str)
-        json_obj = JSON.parse(json_str)
-        items = json_obj['collection']['items']
-        opps = []
 
-        items.each do |item|
-          opps.push Opportunity.new(item, json_str, client)
-        end
+    def init_opps(json_str)
+      json_obj = JSON.parse(json_str)
+      items = json_obj['collection']['items']
+      opps = []
 
-        opps
+      items.each do |item|
+        opps.push Opportunity.new(item, json_str, client)
       end
+
+      opps
+    end
   end
 end

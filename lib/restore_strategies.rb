@@ -115,7 +115,7 @@ module RestoreStrategies
       opp = json_obj['collection']['items'][0]
       if opp.nil?
         href = json_obj['collection']['href']
-        
+
         WebMock::API.stub_request(:get, @host + href)
                     .to_return(status: 404, body: response.data)
 
