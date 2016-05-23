@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'hawk-auth'
   spec.add_dependency 'json'
-  spec.add_dependency 'activemodel'
+  spec.add_dependency 'activemodel', '~> 4.2.6'
   spec.add_dependency 'phoner'
   spec.add_dependency 'email_validator'
   spec.add_development_dependency 'webmock'
