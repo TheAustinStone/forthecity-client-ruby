@@ -38,8 +38,7 @@ describe RestoreStrategies::Opportunity do
   describe 'get_signup' do
     it 'gets a signup object' do
       opp = described_class.find(1)
-      # puts opp.inspect
-      signup = opp.get_signup
+      signup = opp.create_signup
       expect(signup).to be_a(RestoreStrategies::Signup)
     end
   end
@@ -50,14 +49,14 @@ describe RestoreStrategies::Opportunity do
     end
 
     it 'throws an error if the signup data is not valid' do
-      signup = opp.get_signup
+      signup = opp.create_signup
       expect { opp.submit_signup signup }.to raise_error(
         RestoreStrategies::SignupValidationError
       )
     end
 
     it 'submits successfully' do
-      signup = opp.get_signup
+      signup = opp.create_signup
       signup.given_name = 'John'
       signup.family_name = 'Doe'
       signup.telephone = '5125419812'
