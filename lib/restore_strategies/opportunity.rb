@@ -4,8 +4,9 @@ require_relative'error'
 module RestoreStrategies
   # Objectification of the API's opportunity
   class Opportunity
-    include ActiveModel::Model
     include ActiveModel::Validations
+    include ActiveModel::Conversion
+    include ActiveModel::Naming
     include ActiveModel::Conversion
 
     attr_reader :raw, :client, :id, :name, :type, :featured, :description,
