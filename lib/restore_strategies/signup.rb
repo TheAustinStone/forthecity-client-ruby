@@ -7,9 +7,9 @@ require 'phoner'
 module RestoreStrategies
   # Signup class
   class Signup
-    include ActiveModel::Model
     include ActiveModel::Validations
     include ActiveModel::Conversion
+    include ActiveModel::Naming
     include RestoreStrategies::POSTing
 
     attr_reader :raw, :client, :opportunity, :id
