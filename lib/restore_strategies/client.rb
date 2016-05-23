@@ -1,3 +1,5 @@
+require 'net/http'
+
 module RestoreStrategies
   # Restore Strategies client
   class Client
@@ -7,7 +9,7 @@ module RestoreStrategies
       @entry_point = '/api'
       @token = token
       @secret = secret
-      @host = host || 'http://api.restorestrategies.org/'
+      @host = host || 'http://api.restorestrategies.org'
       @port = port || 80
 
       @credentials = {
