@@ -7,8 +7,8 @@ module RestoreStrategies
       @entry_point = '/api'
       @token = token
       @secret = secret
-      @host = host
-      @port = port
+      @host = host || 'http://api.restorestrategies.org/'
+      @port = port || 80
 
       @credentials = {
         id: @token,
