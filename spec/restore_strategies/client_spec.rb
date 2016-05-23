@@ -91,6 +91,23 @@ describe RestoreStrategies::Client do
       expect(response['collection']['version']).to eq('1.0')
       expect(response['collection']['items'].is_a?(Array)).to be true
     end
+
+    it 'accepts symbol parameters' do
+      params = {
+        q: 'foster care',
+        issues: %w(Education Children/Youth)
+      }
+
+      path = '/api/search?q=foster+care&issues[]=Education&' \
+             'issues[]=Children%2FYouth'
+
+      response = client.search(params)
+      response = JSON.parse(response.data)
+
+      expect(response['collection']['href']).to eq(path)
+      expect(response['collection']['version']).to eq('1.0')
+      expect(response['collection']['items'].is_a?(Array)).to be true
+    end
   end
 
   describe 'get_signup' do
