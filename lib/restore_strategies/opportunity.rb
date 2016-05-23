@@ -41,6 +41,14 @@ module RestoreStrategies
       end
     end
 
+    def self.where(params)
+      items_from_response(RestoreStrategies.client.search(params))
+    end
+
+    def self.all
+      items_from_response(RestoreStrategies.client.list_opportunities)
+    end
+
     def create_signup
       signup_str = RestoreStrategies.client.get_signup id
       RestoreStrategies::Signup.new(signup_str, self, client, id)
@@ -51,6 +59,17 @@ module RestoreStrategies
       raise SignupValidationError,
             'Signup does not contain valid data' unless signup.valid?
       RestoreStrategies.client.submit_signup(id, signup.to_payload)
+    end
+
+    def self.items_from_response(api_response)
+      results = []
+      items = JSON.parse(api_response.data)['collection']['items']
+
+      items.each do |item|
+        results.push(Opportunity.new(item, api_response.data))
+      end
+
+      results
     end
   end
 end
