@@ -125,10 +125,10 @@ module RestoreStrategies
                     CGI.escape(sub_value)
                   end
 
-          query.push(key + '[]=' + value)
+          query.push("#{key}[]=#{value}")
         end
       else
-        query.push(key + '=' +
+        query.push("#{key}=" +
           ((value.is_a? Numeric) ? value.to_s : CGI.escape(value)))
       end
     end
