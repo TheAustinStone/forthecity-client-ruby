@@ -35,6 +35,16 @@ describe RestoreStrategies::Opportunity do
     end
   end
 
+  it 'sets array values during initalization' do
+    opp = described_class.find(1)
+    expect(opp.issues).to be_a(Array)
+    expect(opp.days).to be_a(Array)
+    expect(opp.group_types).to be_a(Array)
+    expect(opp.regions).to be_a(Array)
+    expect(opp.supplies).to be_a(Array)
+    expect(opp.skills).to be_a(Array)
+  end
+
   describe 'where' do
     it 'does full text search' do
       opps = described_class.where(q: 'foster care')
