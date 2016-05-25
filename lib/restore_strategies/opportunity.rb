@@ -9,21 +9,19 @@ module RestoreStrategies
     include ActiveModel::Naming
     include ActiveModel::Conversion
 
-    attr_reader :raw, :client, :id, :name, :type, :featured, :description,
+    attr_reader :response, :client, :id, :name, :type, :featured, :description,
                 :location, :items_committed, :items_given, :max_items_needed,
                 :ongoing, :organization, :instructions, :gift_question, :days,
                 :group_type, :issues, :region, :supplies, :skills
 
-    def initialize(json_obj, json_str)
-      @raw = json_str
-      # TODO: Find a better way of capturing the ID
-      @id = json_obj['href'][%r{[^(\/api\/opportunities\/)].}].to_i
+    def initialize(json, response)
+      @response = response
 
-      json_obj['data'].each do |datum|
+      json['data'].each do |datum|
         instance_variable_set("@#{datum['name'].underscore}", datum['value'])
       end
 
-      json_obj['links'].each do |link|
+      json['links'].each do |link|
         @signup_href = link['href'] if link['rel'] == 'signup'
       end
     end
@@ -36,7 +34,7 @@ module RestoreStrategies
       case api_response.response.code.to_i
       when 200
         json = JSON.parse(api_response.data)['collection']['items'][0]
-        Opportunity.new(json, api_response.data)
+        Opportunity.new(json, api_response)
       when 404
         raise NotFoundError.new(api_response, 'Opportunity not found')
       end
@@ -67,7 +65,7 @@ module RestoreStrategies
       items = JSON.parse(api_response.data)['collection']['items']
 
       items.each do |item|
-        results.push(Opportunity.new(item, api_response.data))
+        results.push(Opportunity.new(item, api_response))
       end
 
       results
