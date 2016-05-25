@@ -2,10 +2,12 @@ require: rubocop-rspec
 Metrics/MethodLength:
           Max: 25
 Metrics/ClassLength:
-          Max: 125
+          Max: 140
 Metrics/AbcSize:
           Max: 20
 Metrics/CyclomaticComplexity:
           Severity: warning
+Metrics/PerceivedComplexity:
+          Max: 8
 Style/MutableConstant:
           Enabled: false
