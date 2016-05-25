@@ -1,16 +1,40 @@
 require 'net/http'
+require 'uri'
 
 module RestoreStrategies
   # Restore Strategies client
   class Client
     attr_reader :entry_point
 
-    def initialize(token, secret, host = nil, port = nil)
+    # Initialize the Restore Strategies client
+    #
+    # * token: a user token
+    # * secret: a user secret
+    # * (optional) url: a valid URL
+    # * (optional) port: a valid TCP port
+    #
+    def initialize(token, secret, url = nil, port = nil)
       @entry_point = '/api'
       @token = token
       @secret = secret
-      @host = host || 'http://api.restorestrategies.org'
-      @port = port || 80
+
+      if url
+        uri = URI(url)
+        @host = uri.host
+
+        @port = if port.nil?
+                  if uri.scheme == 'https'
+                    443
+                  else
+                    80
+                  end
+                else
+                  port
+                end
+      else
+        @host = 'api.restorestrategies.org'
+        @port = port || 80
+      end
 
       @credentials = {
         id: @token,
