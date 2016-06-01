@@ -73,18 +73,6 @@ module RestoreStrategies
       all.first
     end
 
-    def create_signup
-      signup_str = RestoreStrategies.client.get_signup id
-      RestoreStrategies::Signup.new(signup_str, self, client, id)
-    end
-
-    def submit_signup(signup)
-      raise TypeError unless signup.is_a? Signup
-      raise SignupValidationError,
-            'Signup does not contain valid data' unless signup.valid?
-      RestoreStrategies.client.submit_signup(id, signup.to_payload)
-    end
-
     def self.items_from_response(api_response)
       results = []
       items = JSON.parse(api_response.data)['collection']['items']

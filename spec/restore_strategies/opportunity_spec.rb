@@ -95,38 +95,4 @@ describe RestoreStrategies::Opportunity do
       end
     end
   end
-
-  describe 'get_signup' do
-    it 'gets a signup object' do
-      opp = described_class.find(1)
-      signup = opp.create_signup
-      expect(signup).to be_a(RestoreStrategies::Signup)
-    end
-  end
-
-  describe 'submit_signup' do
-    it 'throws an error if the object put in is not a signup object' do
-      expect { opp.submit_signup 1 }.to raise_error(TypeError)
-    end
-
-    it 'throws an error if the signup data is not valid' do
-      signup = opp.create_signup
-      expect { opp.submit_signup signup }.to raise_error(
-        RestoreStrategies::SignupValidationError
-      )
-    end
-
-    it 'submits successfully' do
-      signup = opp.create_signup
-      signup.given_name = 'John'
-      signup.family_name = 'Doe'
-      signup.telephone = '5125419812'
-      signup.email = 'john.doe@email.com'
-      signup.comment = 'no comment'
-      signup.num_of_items_committed = 2
-      signup.lead = 'other'
-      signup.valid?
-      opp.submit_signup signup
-    end
-  end
 end

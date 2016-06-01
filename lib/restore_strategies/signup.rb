@@ -12,23 +12,42 @@ module RestoreStrategies
     include ActiveModel::Naming
     include RestoreStrategies::POSTing
 
-    attr_reader :raw, :client, :opportunity, :id
-
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
-                  :num_of_items_committed, :lead
+                  :num_of_items_committed, :lead, :opportunity_id, :response
 
-    validates_length_of :given_name, minimum: 2
-    validates_length_of :given_name, minimum: 2
+    validates :given_name, :family_name, :opportunity_id, presence: true
     validates :email, email: true
     validates :telephone, phone: true
 
-    def initialize(json_str, opportunity, client, id)
-      @raw = json_str
-      @opportunity = opportunity
-      @client = client
-      @id = id
+    def initialize(hash)
+      legal_keys = %w(given_name family_name telephone email comment
+                      num_of_items_committed lead, opportunity_id)
+
+      hash.each_pair do |key, value|
+        next unless legal_keys.include?(key.to_s)
+
+        instance_variable_set("@#{key}", value)
+      end
+
       field_attr :given_name, :family_name, :telephone, :email, :comment,
                  :num_of_items_committed, :lead
+    end
+
+    def save
+      return false unless valid?
+
+      payload = to_payload
+
+      @response = RestoreStrategies.client.submit_signup(
+        opportunity_id,
+        payload
+      )
+
+      if @response.response.code == '202'
+        true
+      else
+        false
+      end
     end
   end
 

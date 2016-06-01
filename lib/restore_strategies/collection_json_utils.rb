@@ -8,10 +8,9 @@ module RestoreStrategies
       data = []
 
       postable.post_fields.each do |field|
-        data.push build_element(
-          field.id2name,
-          postable.send(field)
-        )
+        if postable.send(field)
+          data.push(build_element(field.id2name, postable.send(field)))
+        end
       end
 
       { 'template' => { 'data' => data } }

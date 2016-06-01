@@ -59,14 +59,12 @@ module RestoreStrategies
     end
 
     def get_signup(id)
-      href = get_signup_href(id)
-      return nil if href.nil?
+      href = "/api/opportunities/#{id}/signup"
       api_request(href, 'GET')
     end
 
     def submit_signup(id, payload)
-      href = get_signup_href(id)
-      return nil if href.nil?
+      href = "/api/opportunities/#{id}/signup"
       api_request(href, 'POST', payload)
     end
 
@@ -157,13 +155,6 @@ module RestoreStrategies
         query.push("#{key}=" +
           ((value.is_a? Numeric) ? value.to_s : CGI.escape(value)))
       end
-    end
-
-    def get_signup_href(id)
-      request = get_opportunity(id).data
-      json_obj = JSON.parse(request)
-      return nil if json_obj.nil?
-      get_rel_href('signup', json_obj['collection']['items'][0]['links'])
     end
 
     def get_rel_href(rel, json_obj)
