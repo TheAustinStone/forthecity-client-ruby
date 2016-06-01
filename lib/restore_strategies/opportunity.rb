@@ -26,6 +26,12 @@ module RestoreStrategies
       end
     end
 
+    # For Rails API
+    # http://api.rubyonrails.org/classes/ActiveModel/Model.html#method-i-persisted-3F
+    def persisted?
+      true
+    end
+
     def value_of(datum)
       # rubocop:disable Style/GuardClause
       if !datum['value'].nil?
@@ -61,6 +67,10 @@ module RestoreStrategies
 
     def self.all
       items_from_response(RestoreStrategies.client.list_opportunities)
+    end
+
+    def self.first
+      all.first
     end
 
     def create_signup
