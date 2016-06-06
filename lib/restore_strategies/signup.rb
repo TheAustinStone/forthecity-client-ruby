@@ -13,7 +13,8 @@ module RestoreStrategies
     include RestoreStrategies::POSTing
 
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
-                  :num_of_items_committed, :lead, :opportunity_id, :response
+                  :num_of_items_committed, :lead, :opportunity_id, :response,
+                  :campus
 
     validates :given_name, :family_name, :opportunity_id, presence: true
     validates :email, email: true
@@ -21,7 +22,7 @@ module RestoreStrategies
 
     def initialize(hash)
       legal_keys = %w(given_name family_name telephone email comment
-                      num_of_items_committed lead, opportunity_id)
+                      num_of_items_committed lead campus opportunity_id)
 
       hash.each_pair do |key, value|
         next unless legal_keys.include?(key.to_s)
@@ -30,7 +31,7 @@ module RestoreStrategies
       end
 
       field_attr :given_name, :family_name, :telephone, :email, :comment,
-                 :num_of_items_committed, :lead
+                 :num_of_items_committed, :lead, :campus
     end
 
     def save

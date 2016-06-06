@@ -17,6 +17,7 @@ describe RestoreStrategies::Signup do
       family_name: 'Doe',
       email: 'jon.doe@example.com',
       telephone: '5124567890',
+      campus: 'Test Campus',
       opportunity_id: 37
     }
   end
@@ -56,6 +57,11 @@ describe RestoreStrategies::Signup do
       expect(signup.errors.messages[:email]).to(
         eq(['is invalid'])
       )
+    end
+
+    it 'has a campus attribute' do
+      signup = described_class.new(params)
+      expect(signup.campus).to eq('Test Campus')
     end
 
     it 'validates correct inputs' do
