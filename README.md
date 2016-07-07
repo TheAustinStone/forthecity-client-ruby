@@ -1,36 +1,60 @@
-# RestoreStrategiesClient
+# Restore Strategies' Ruby gem
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/RestoreStrategiesClient`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is a Ruby gem for the Restore Strategies API. The gem allows clients to view, filter, search & sign up for volunteer opportunities.
 
-TODO: Delete this and the text above, and describe your gem
+## Initialize
 
-## Installation
-
-Add this line to your application's Gemfile:
+To use the API you need valid credentials. The client requires a valid token & secret.
 
 ```ruby
-gem 'RestoreStrategiesClient'
+require 'restore_strategies'
+
+RestoreStrategies::Client.new('<a_user_token>', '<a_user_secret>')
 ```
 
-And then execute:
+## Viewing & Searching Opportunities
 
-    $ bundle
+This works similar to ActiveRecord. The methods ```find```, ```first```, ```all```, & ```where``` are available.
 
-Or install it yourself as:
 
-    $ gem install RestoreStrategiesClient
+```ruby
+# Finds a specific opportunity based on id
+RestoreStrategies::Opportunity.find(1)
 
-## Usage
+# Returns all opportunities
+RestoreStrategies::Opportunity.all
 
-TODO: Write usage instructions here
+# Returns the first opportunity
+RestoreStrategies::Opportunity.first
 
-## Development
+# Returns opportunities within the 'Education' or 'Children/Youth' issues & the 
+# 'South' or 'Central' regions that have the key words 'foster care'
+RestoreStrategies::Opportunity.where(
+  q: 'foster care',
+  issues: ['Education', 'Children/Youth'],
+  region: ['South', 'Central']
+)
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## Signup
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Signups can be submitted for opportunities. In the below example, each of the keys are required
 
-## Contributing
+```ruby
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/RestoreStrategiesClient.
+signup = RestoreStrategies::Signup.new({
+  given_name: 'Jon',
+  family_name: 'Doe',
+  email: 'jon.doe@example.com',
+  telephone: '5127088860',
+  opportunity_id: 37
+})
+
+puts "The signup is valid, true or false? #{signup.valid?}"
+
+if signup.save
+  puts 'You signed up!'
+end
+```
+
 
