@@ -12,7 +12,8 @@ module RestoreStrategies
     attr_reader :response, :client, :id, :name, :type, :featured, :description,
                 :location, :items_committed, :items_given, :max_items_needed,
                 :ongoing, :organization, :instructions, :gift_question, :days,
-                :group_types, :issues, :regions, :supplies, :skills
+                :group_types, :issues, :regions, :supplies, :skills,
+                :municipalities
 
     def initialize(json, response)
       @response = response.response
