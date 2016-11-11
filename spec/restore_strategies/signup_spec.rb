@@ -68,6 +68,12 @@ describe RestoreStrategies::Signup do
       signup = described_class.new(params)
       expect(signup.valid?).to be(true)
     end
+
+    it 'allows committed items' do
+      params[:numOfItemsCommitted] = 2
+      signup = described_class.new(params)
+      expect(signup.valid?).to be(true)
+    end
   end
 
   describe 'save' do
