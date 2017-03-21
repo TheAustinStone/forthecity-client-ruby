@@ -82,6 +82,16 @@ describe RestoreStrategies::Opportunity do
         expect(opp).to be_a(described_class)
       end
     end
+
+    it 'searches for featured opportunities' do
+      opps = described_class.where(featured: true)
+
+      expect(opps).to be_a(Array)
+
+      opps.each do |opp|
+        expect(opp).to be_a(described_class)
+      end
+    end
   end
 
   describe 'all' do

@@ -153,7 +153,7 @@ module RestoreStrategies
         end
       else
         query.push("#{key}=" +
-          ((value.is_a? Numeric) ? value.to_s : CGI.escape(value)))
+          ((value.is_a? Numeric) ? value.to_s : CGI.escape(value.to_s)))
       end
     end
 
