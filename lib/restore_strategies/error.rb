@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RestoreStrategies
   # General response error class
   class ResponseError < StandardError

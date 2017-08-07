@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require_relative 'signup'
 
 module RestoreStrategies
   # Objectification of the API's opportunity
   class Opportunity < ApiObject
-
     attr_reader :name, :type, :featured, :description, :location,
                 :items_committed, :items_given, :max_items_needed, :ongoing,
                 :organization, :instructions, :gift_question, :days,

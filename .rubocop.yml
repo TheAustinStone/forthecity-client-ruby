@@ -1,4 +1,6 @@
 require: rubocop-rspec
+AllCops:
+          TargetRubyVersion: 2.3
 Metrics/MethodLength:
           Max: 25
 Metrics/ClassLength:

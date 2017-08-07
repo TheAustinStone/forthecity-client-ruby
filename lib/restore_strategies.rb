@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'hawk'
 require 'cgi'
@@ -8,6 +10,7 @@ require_relative'restore_strategies/client'
 require_relative'restore_strategies/error'
 require_relative 'restore_strategies/api_object'
 require_relative'restore_strategies/opportunity'
+require_relative'restore_strategies/user'
 
 # Restore Strategies module
 module RestoreStrategies

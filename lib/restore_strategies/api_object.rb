@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_model'
 require_relative'error'
 
@@ -25,15 +27,14 @@ module RestoreStrategies
     end
 
     def value_of(datum)
-      if !datum['value'].nil?
-        return datum['value']
-      elsif !datum['array'].nil?
-        return datum['array']
-      elsif !datum['object'].nil?
-        return datum['object']
-      end
-
-      nil
+      data = if !datum['value'].nil?
+               datum['value']
+             elsif !datum['array'].nil?
+               datum['array']
+             elsif !datum['object'].nil?
+               datum['object']
+             end
+      data
     end
     private :value_of
 

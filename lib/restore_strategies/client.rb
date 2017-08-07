@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'uri'
 
@@ -71,7 +73,7 @@ module RestoreStrategies
     private
 
     def api_request(path, verb, payload = nil)
-      verb.downcase!
+      verb = verb.downcase
       header = request_header(path, verb, payload)
       http = Net::HTTP.new(@host, @port)
 
