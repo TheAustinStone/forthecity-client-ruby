@@ -12,11 +12,11 @@ module RestoreStrategies
 
     @path = '/api/opportunities'
 
-    def initialize(json, response)
+    def initialize(json:, response:)
       json['links'].each do |link|
         @signup_href = link['href'] if link['rel'] == 'signup'
       end
-      super(json, response)
+      super(json: json, response: response)
     end
 
     def self.where(params)

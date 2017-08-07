@@ -1,7 +1,7 @@
-FROM ruby:1.9
+FROM ruby:2.4
 
 MAINTAINER Joseph Simmons 'joseph@austinstone.org'
-ENV REFRESHED 2016-04-25
+ENV REFRESHED 2017-08-07
 RUN gem install bundler --no-ri --no-rdoc
 VOLUME ['/opt/app']
 ADD . /opt/app/

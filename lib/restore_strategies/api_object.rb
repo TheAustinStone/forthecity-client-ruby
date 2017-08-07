@@ -10,7 +10,7 @@ module RestoreStrategies
 
     attr_reader :response, :client, :id
 
-    def initialize(json, response)
+    def initialize(json:, response:)
       @response = response.response
 
       json['data'].each do |datum|
@@ -25,7 +25,6 @@ module RestoreStrategies
     end
 
     def value_of(datum)
-      # rubocop:disable Style/GuardClause
       if !datum['value'].nil?
         return datum['value']
       elsif !datum['array'].nil?
@@ -33,7 +32,6 @@ module RestoreStrategies
       elsif !datum['object'].nil?
         return datum['object']
       end
-      # rubocop:enable Style/GuardClause
 
       nil
     end
@@ -47,7 +45,7 @@ module RestoreStrategies
       case api_response.response.code.to_i
       when 200
         json = JSON.parse(api_response.data)['collection']['items'][0]
-        new(json, api_response)
+        new(json: json, response: api_response)
       when 404
         raise NotFoundError.new(api_response, "#{self.class} not found")
       end
@@ -58,7 +56,7 @@ module RestoreStrategies
       items = JSON.parse(api_response.data)['collection']['items']
 
       items.each do |item|
-        results.push(new(item, api_response))
+        results.push(new(json: item, response: api_response))
       end
 
       results
