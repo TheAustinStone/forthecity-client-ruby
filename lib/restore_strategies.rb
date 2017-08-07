@@ -6,6 +6,7 @@ require_relative'restore_strategies/version'
 require_relative'restore_strategies/response'
 require_relative'restore_strategies/client'
 require_relative'restore_strategies/error'
+require_relative 'restore_strategies/api_object'
 require_relative'restore_strategies/opportunity'
 
 # Restore Strategies module

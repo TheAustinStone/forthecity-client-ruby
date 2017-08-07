@@ -45,12 +45,12 @@ module RestoreStrategies
       RestoreStrategies.client = self
     end
 
-    def get_opportunity(id)
-      api_request("/api/opportunities/#{id}", 'GET')
+    def get_item(path, id)
+      api_request("#{path}/#{id}", 'GET')
     end
 
-    def list_opportunities
-      api_request('/api/opportunities', 'GET')
+    def list_items(path)
+      api_request(path, 'GET')
     end
 
     def search(params)

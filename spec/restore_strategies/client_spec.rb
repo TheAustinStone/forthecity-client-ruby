@@ -12,21 +12,25 @@ describe RestoreStrategies::Client do
     )
   end
 
+  let(:path) do
+    '/api/opportunities'
+  end
+
   it 'has a version number' do
     expect(RestoreStrategies::VERSION).not_to be nil
   end
 
-  describe 'get_opportunity' do
+  describe 'get_item' do
     it 'responds with 404 code and error when the opportunity doesnt exist' do
       begin
-        client.get_opportunity(1_000_000).data
+        client.get_item(path, 1_000_000).data
       rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('404')
       end
     end
 
     it 'responds with an opportunity' do
-      response = client.get_opportunity(1)
+      response = client.get_item(path, 1)
       response = JSON.parse(response.data)
       href = response['collection']['items'][0]['href']
       expect(href).to eq('/api/opportunities/1')
@@ -35,7 +39,7 @@ describe RestoreStrategies::Client do
 
   describe 'list_opportunities' do
     it 'responds with a list of opportunities' do
-      response = client.list_opportunities
+      response = client.list_items(path)
       response = JSON.parse(response.data)
       expect(response['collection']['href']).to eq('/api/opportunities')
       expect(response['collection']['version']).to eq('1.0')
