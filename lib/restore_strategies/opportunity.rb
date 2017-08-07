@@ -3,10 +3,6 @@ require_relative 'signup'
 module RestoreStrategies
   # Objectification of the API's opportunity
   class Opportunity < ApiObject
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    include ActiveModel::Naming
-    include ActiveModel::Conversion
 
     attr_reader :name, :type, :featured, :description, :location,
                 :items_committed, :items_given, :max_items_needed, :ongoing,

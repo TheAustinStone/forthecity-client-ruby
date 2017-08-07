@@ -1,8 +1,13 @@
+require 'active_model'
 require_relative'error'
 
 module RestoreStrategies
   # Generic class to manipulate API resources as Ruby classes
   class ApiObject
+    include ActiveModel::Validations
+    include ActiveModel::Conversion
+    include ActiveModel::Naming
+
     attr_reader :response, :client, :id
 
     def initialize(json, response)
