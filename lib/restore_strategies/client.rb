@@ -65,9 +65,8 @@ module RestoreStrategies
       api_request(href, 'GET')
     end
 
-    def submit_signup(id, payload)
-      href = "/api/opportunities/#{id}/signup"
-      api_request(href, 'POST', payload)
+    def post_item(path, payload)
+      api_request(path, 'POST', payload)
     end
 
     private

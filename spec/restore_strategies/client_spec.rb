@@ -126,7 +126,7 @@ describe RestoreStrategies::Client do
     end
   end
 
-  describe 'submit_signup' do
+  describe 'post_item' do
     it 'responds with a 400 code from a bad signup template' do
       payload = {
         'template' => {
@@ -144,7 +144,10 @@ describe RestoreStrategies::Client do
       payload = JSON.generate(payload)
 
       begin
-        client.submit_signup(1, payload)
+        client.post_item(
+          '/api/opportunities/1/signup',
+          payload
+        )
       rescue RestoreStrategies::ResponseError => e
         expect(e.response.code).to eq('400')
       end
@@ -166,7 +169,10 @@ describe RestoreStrategies::Client do
       }
 
       payload = JSON.generate(payload)
-      response = client.submit_signup(1, payload)
+      response = client.post_item(
+        '/api/opportunities/1/signup',
+        payload
+      )
       expect(response.response.code).to eq('202')
     end
   end
