@@ -41,8 +41,8 @@ module RestoreStrategies
 
       payload = to_payload
 
-      @response = RestoreStrategies.client.submit_signup(
-        opportunity_id,
+      @response = RestoreStrategies.client.post_item(
+        "/api/opportunities/#{opportunity_id}/signup",
         payload
       )
 
