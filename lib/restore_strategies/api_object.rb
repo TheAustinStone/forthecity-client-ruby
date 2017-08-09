@@ -12,8 +12,9 @@ module RestoreStrategies
 
     attr_reader :response, :client, :id
 
-    def initialize(json:, response:)
+    def initialize(json:, response:, new_object: false)
       @response = response.response
+      @new_record = new_object
 
       json['data'].each do |datum|
         instance_variable_set("@#{datum['name'].underscore}", value_of(datum))
@@ -23,8 +24,17 @@ module RestoreStrategies
     # For Rails API
     # http://api.rubyonrails.org/classes/ActiveModel/Model.html#method-i-persisted-3F
     def persisted?
-      true
+      !new_record?
     end
+
+    def new_record?
+      @new_record
+    end
+
+    def response_data
+      JSON.parse(@response.data)
+    end
+    private :response_data
 
     def value_of(datum)
       data = if !datum['value'].nil?
@@ -37,6 +47,20 @@ module RestoreStrategies
       data
     end
     private :value_of
+
+    def instance_vars=(data)
+      data.each_pair do |key, value|
+        instance_variable_set("@#{key}", value)
+      end
+    end
+    private :instance_vars=
+
+    def vars_from_response
+      response_data['collection']['items'][0]['data'].each do |datum|
+        instance_variable_set("@#{datum['name'].underscore}", value_of(datum))
+      end
+    end
+    private :vars_from_response
 
     def self.find(id)
       raise ArgumentError, 'id must be integer' unless id.is_a? Integer
