@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'restore_strategies/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'RestoreStrategies'
+  spec.name          = 'restore_strategies'
   spec.version       = RestoreStrategies::VERSION
   spec.authors       = ['The For the City Network']
   spec.email         = ['info@forthecity.org']
