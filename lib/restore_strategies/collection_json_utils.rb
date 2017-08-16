@@ -33,7 +33,7 @@ module RestoreStrategies
     attr_reader :post_fields
 
     def field_attr(*args)
-      @post_fields ||= []
+      @post_fields = []
       args.each do |arg|
         @post_fields.push arg
       end

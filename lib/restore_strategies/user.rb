@@ -8,13 +8,13 @@ module RestoreStrategies
     attr_accessor :given_name, :family_name, :church, :church_size,
                   :franchise_city, :website, :street_address, :address_locality,
                   :address_region, :postal_code, :email, :uuid,
-                  :subscription_id, :plan_id, :addon_id, :plan_level
+                  :subscription_id, :plan_id, :addon_id, :plan_level,
+                  :created_at, :updated_at
 
     @path = '/api/admin/users'
-
-    validates :given_name, :family_name, :church, :franchise_city, :website,
-              :street_address, :address_locality, :address_region, :postal_code,
-              presence: true
+    validates :given_name, :family_name, :church, :church_size,
+              :franchise_city, :website, :street_address, :address_locality,
+              :address_region, :postal_code, presence: true
     validates :email, email: true
 
     def initialize(json: nil, response: nil, **data)
@@ -42,7 +42,7 @@ module RestoreStrategies
       path = if new_record?
                '/api/admin/users'
              else
-               "/api/admin/users/#{uuid}"
+               "/api/admin/users/#{id}"
              end
 
       @response = RestoreStrategies.client.post_item(path, to_payload)
@@ -62,8 +62,7 @@ module RestoreStrategies
     end
 
     def update(**data)
-      return false unless valid?
-      instance_vars = data
+      self.instance_vars = data
       save_and_check
     end
 
@@ -74,6 +73,8 @@ module RestoreStrategies
         false
       end
     end
+
+    private
 
     # def destroy; end
   end
