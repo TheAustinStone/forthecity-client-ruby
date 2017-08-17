@@ -69,10 +69,35 @@ describe RestoreStrategies::User do
     expect(user.uuid.length).to be 36
   end
 
-  it 'updates an existing user' do
+  it 'updates an existing user using update' do
     church = "Church Name #{Time.now.to_f}"
     user = described_class.find(1)
     expect(user.update(church: church)).not_to be false
     expect(described_class.find(1).church).to eq(church)
+  end
+
+  it 'updates an existing user with manual initialization' do
+    given_name = Faker::Name.first_name
+    website = "http://#{Faker::Internet.domain_name}"
+    hash = {
+      given_name: given_name,
+      family_name: Faker::Name.last_name,
+      church: church_names[Random.rand(church_names.length - 1)],
+      church_size: Random.rand(8000),
+      website: website,
+      email: 'seeded_user@example.com',
+      franchise_city: 'Austin',
+      street_address: Faker::Address.street_address,
+      address_locality: Faker::Address.city,
+      address_region: Faker::Address.state,
+      postal_code: Faker::Address.zip,
+      id: 1,
+      new_object: false
+    }
+    user = described_class.new(hash)
+    expect(user.save).not_to be false
+    user_updated = described_class.find(1)
+    expect(user_updated.given_name).to eq given_name
+    expect(user_updated.website).to eq website
   end
 end

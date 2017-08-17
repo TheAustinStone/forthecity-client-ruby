@@ -22,7 +22,12 @@ module RestoreStrategies
         super(json: json, response: response)
       else
         self.instance_vars = data
-        @new_record = data[:new_object] || true
+
+        @new_object = if !data[:new_object].nil?
+                        data[:new_object]
+                      else
+                        true
+                      end
       end
 
       field_attr  :given_name, :family_name, :church, :church_size,
@@ -39,7 +44,7 @@ module RestoreStrategies
     def save
       return false unless valid?
 
-      path = if new_record?
+      path = if new_object?
                '/api/admin/users'
              else
                "/api/admin/users/#{id}"
@@ -73,9 +78,5 @@ module RestoreStrategies
         false
       end
     end
-
-    private
-
-    # def destroy; end
   end
 end

@@ -14,7 +14,7 @@ module RestoreStrategies
 
     def initialize(json:, response:, new_object: false)
       @response = response.response
-      @new_record = new_object
+      @new_object = new_object
 
       json['data'].each do |datum|
         instance_variable_set("@#{datum['name'].underscore}", value_of(datum))
@@ -24,11 +24,11 @@ module RestoreStrategies
     # For Rails API
     # http://api.rubyonrails.org/classes/ActiveModel/Model.html#method-i-persisted-3F
     def persisted?
-      !new_record?
+      !new_object?
     end
 
-    def new_record?
-      @new_record
+    def new_object?
+      @new_object
     end
 
     def response_data
@@ -37,14 +37,13 @@ module RestoreStrategies
     private :response_data
 
     def value_of(datum)
-      data = if !datum['value'].nil?
-               datum['value']
-             elsif !datum['array'].nil?
-               datum['array']
-             elsif !datum['object'].nil?
-               datum['object']
-             end
-      data
+      if !datum['value'].nil?
+        datum['value']
+      elsif !datum['array'].nil?
+        datum['array']
+      elsif !datum['object'].nil?
+        datum['object']
+      end
     end
     private :value_of
 
