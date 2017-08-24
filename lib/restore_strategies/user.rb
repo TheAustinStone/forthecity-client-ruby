@@ -71,12 +71,8 @@ module RestoreStrategies
       save_and_check
     end
 
-    def save_and_check
-      if save
-        self
-      else
-        false
-      end
+    def keys
+      RestoreStrategies::Key.caller(id)
     end
   end
 end

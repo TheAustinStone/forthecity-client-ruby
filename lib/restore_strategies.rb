@@ -11,6 +11,7 @@ require_relative'restore_strategies/error'
 require_relative 'restore_strategies/api_object'
 require_relative'restore_strategies/opportunity'
 require_relative'restore_strategies/user'
+require_relative'restore_strategies/key'
 
 # Restore Strategies module
 module RestoreStrategies

@@ -61,6 +61,14 @@ module RestoreStrategies
     end
     private :vars_from_response
 
+    def save_and_check
+      if save
+        self
+      else
+        false
+      end
+    end
+
     def self.find(id)
       raise ArgumentError, 'id must be integer' unless id.is_a? Integer
 
