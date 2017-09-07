@@ -9,7 +9,7 @@ module RestoreStrategies
                   :franchise_city, :website, :street_address, :address_locality,
                   :address_region, :postal_code, :email, :uuid,
                   :subscription_id, :plan_id, :addon_id, :plan_level,
-                  :created_at, :updated_at
+                  :created_at, :updated_at, :telephone
 
     @path = '/api/admin/users'
     validates :given_name, :family_name, :church, :church_size,
@@ -32,7 +32,7 @@ module RestoreStrategies
 
       field_attr  :given_name, :family_name, :church, :church_size,
                   :franchise_city, :website, :street_address, :address_locality,
-                  :address_region, :postal_code, :email, :uuid,
+                  :address_region, :postal_code, :email, :uuid, :telephone,
                   :subscription_id, :plan_id, :addon_id, :plan_level
     end
 

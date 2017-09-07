@@ -17,6 +17,7 @@ FactoryGirl.define do
     church_size { Random.rand(8000) }
     website { "http://#{Faker::Internet.domain_name}" }
     email { Faker::Internet.email }
+    telephone { Faker::PhoneNumber.phone_number }
     franchise_city { Faker::Address.city }
     street_address { Faker::Address.street_address }
     address_locality { Faker::Address.city }
