@@ -103,4 +103,10 @@ describe RestoreStrategies::User do
     expect(user_updated.given_name).to eq given_name
     expect(user_updated.website).to eq website
   end
+
+  it 'gets list of signups' do
+    signups = described_class.find(1).signups
+    expect(signups.class).to be Array
+    expect(signups.first.class).to be RestoreStrategies::Signup
+  end
 end

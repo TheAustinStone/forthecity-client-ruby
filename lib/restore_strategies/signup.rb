@@ -8,10 +8,7 @@ require 'phoner'
 
 module RestoreStrategies
   # Signup class
-  class Signup
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    include ActiveModel::Naming
+  class Signup < ApiObject
     include RestoreStrategies::POSTing
 
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
@@ -22,14 +19,18 @@ module RestoreStrategies
     validates :email, email: true
     validates :telephone, phone: true
 
-    def initialize(hash)
-      legal_keys = %w(given_name family_name telephone email comment
-                      numOfItemsCommitted lead campus opportunity_id)
+    def initialize(json: nil, response: nil, **hash)
+      if json && response
+        super(json: json, response: response)
+      else
+        legal_keys = %w(given_name family_name telephone email comment
+                        numOfItemsCommitted lead campus opportunity_id)
 
-      hash.each_pair do |key, value|
-        next unless legal_keys.include?(key.to_s)
+        hash.each_pair do |key, value|
+          next unless legal_keys.include?(key.to_s)
 
-        instance_variable_set("@#{key}", value)
+          instance_variable_set("@#{key}", value)
+        end
       end
 
       field_attr :given_name, :family_name, :telephone, :email, :comment,
@@ -51,6 +52,11 @@ module RestoreStrategies
       else
         false
       end
+    end
+
+    def self.where(user_id: nil)
+      path = "/api/admin/users/#{user_id}/signups"
+      items_from_response(RestoreStrategies.client.list_items(path))
     end
   end
 

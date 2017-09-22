@@ -74,5 +74,9 @@ module RestoreStrategies
     def keys
       RestoreStrategies::Key.caller(id)
     end
+
+    def signups
+      RestoreStrategies::Signup.where(user_id: id)
+    end
   end
 end
