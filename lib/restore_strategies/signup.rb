@@ -14,6 +14,7 @@ module RestoreStrategies
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
                   :numOfItemsCommitted, :lead, :opportunity_id, :response,
                   :campus
+    attr_reader :updated_at, :created_at, :opportunity_name, :organization_name
 
     validates :given_name, :family_name, :opportunity_id, presence: true
     validates :email, email: true
