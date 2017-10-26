@@ -20,14 +20,14 @@ module RestoreStrategies
     validates :email, email: true
     validates :telephone, phone: true
 
-    def initialize(json: nil, response: nil, **hash)
+    def initialize(json: nil, response: nil, **data)
       if json && response
         super(json: json, response: response)
       else
         legal_keys = %w(given_name family_name telephone email comment
                         numOfItemsCommitted lead campus opportunity_id)
 
-        hash.each_pair do |key, value|
+        data.each_pair do |key, value|
           next unless legal_keys.include?(key.to_s)
 
           instance_variable_set("@#{key}", value)
