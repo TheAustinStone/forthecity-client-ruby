@@ -109,4 +109,24 @@ describe RestoreStrategies::User do
     expect(signups.class).to be Array
     expect(signups.first.class).to be RestoreStrategies::Signup
   end
+
+  it 'creates a new user with reseller' do
+    user = described_class.create(
+      given_name: Faker::Name.first_name,
+      family_name: Faker::Name.last_name,
+      church: church_names[Random.rand(church_names.length - 1)],
+      church_size: Random.rand(8000),
+      website: "http://#{Faker::Internet.domain_name}",
+      email: Faker::Internet.email,
+      telephone: Faker::PhoneNumber.phone_number,
+      franchise_city: Faker::Address.city,
+      street_address: Faker::Address.street_address,
+      address_locality: Faker::Address.city,
+      address_region: Faker::Address.state,
+      postal_code: Faker::Address.zip,
+      reseller_id: 1
+    )
+    expect(user.class).to be described_class
+    expect(user.reseller_id).to eq '1'
+  end
 end
