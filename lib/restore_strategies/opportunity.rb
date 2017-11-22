@@ -8,7 +8,7 @@ module RestoreStrategies
                 :items_committed, :items_given, :max_items_needed, :ongoing,
                 :organization, :instructions, :gift_question, :days,
                 :group_types, :issues, :regions, :supplies, :skills,
-                :municipalities
+                :municipalities, :closed
 
     @path = '/api/opportunities'
 
