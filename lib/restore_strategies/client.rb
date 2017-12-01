@@ -104,6 +104,7 @@ module RestoreStrategies
       }
     end
 
+    # rubocop:disable CyclomaticComplexity, LiteralAsCondition
     def response_case(response)
       case response.code
       when '500'
@@ -129,6 +130,7 @@ module RestoreStrategies
         Response.new(response, response.body)
       end
     end
+    # rubocop:enable CyclomaticComplexity, LiteralAsCondition
 
     def params_to_string(params)
       query = []
@@ -154,7 +156,7 @@ module RestoreStrategies
         end
       else
         query.push("#{key}=" +
-          ((value.is_a? Numeric) ? value.to_s : CGI.escape(value.to_s)))
+          (value.is_a?(Numeric) ? value.to_s : CGI.escape(value.to_s)))
       end
     end
 

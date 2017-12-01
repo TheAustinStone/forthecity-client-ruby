@@ -37,6 +37,7 @@ describe RestoreStrategies::Opportunity do
     end
   end
 
+  # rubocop:disable MultipleExpectations
   it 'sets array values during initalization' do
     opp = described_class.find(1)
     expect(opp.issues).to be_a(Array)
@@ -46,53 +47,42 @@ describe RestoreStrategies::Opportunity do
     expect(opp.supplies).to be_a(Array)
     expect(opp.skills).to be_a(Array)
   end
+  # rubocop:enable MultipleExpectations
 
   describe 'where' do
     it 'does full text search' do
       opps = described_class.where(q: 'foster care')
 
       expect(opps).to be_a(Array)
-
-      opps.each do |opp|
-        expect(opp).to be_a(described_class)
-      end
+      expect(opps).to all be_a(described_class)
     end
 
     it 'does parameterized search' do
       opps = described_class.where(
-        issues: %w(Education Children/Youth),
-        region: %w(South Central)
+        issues: %w[Education Children/Youth],
+        region: %w[South Central]
       )
 
       expect(opps).to be_a(Array)
-
-      opps.each do |opp|
-        expect(opp).to be_a(described_class)
-      end
+      expect(opps).to all be_a(described_class)
     end
 
     it 'does parameterized & full text search' do
       opps = described_class.where(
         q: 'foster care',
-        issues: %w(Education Children/Youth),
-        region: %w(South Central)
+        issues: %w[Education Children/Youth],
+        region: %w[South Central]
       )
 
       expect(opps).to be_a(Array)
-
-      opps.each do |opp|
-        expect(opp).to be_a(described_class)
-      end
+      expect(opps).to all be_a(described_class)
     end
 
     it 'searches for featured opportunities' do
       opps = described_class.where(featured: true)
 
       expect(opps).to be_a(Array)
-
-      opps.each do |opp|
-        expect(opp).to be_a(described_class)
-      end
+      expect(opps).to all be_a(described_class)
     end
   end
 
@@ -101,10 +91,7 @@ describe RestoreStrategies::Opportunity do
       opps = described_class.all
 
       expect(opps).to be_a(Array)
-
-      opps.each do |opp|
-        expect(opp).to be_a(described_class)
-      end
+      expect(opps).to all be_a(described_class)
     end
   end
 end

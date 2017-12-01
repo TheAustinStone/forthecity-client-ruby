@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-
 # coding: utf-8
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'restore_strategies/version'
@@ -21,16 +21,16 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'activemodel'
+  spec.add_dependency 'email_validator'
   spec.add_dependency 'hawk-auth'
   spec.add_dependency 'json'
-  spec.add_dependency 'activemodel'
   spec.add_dependency 'phoner'
-  spec.add_dependency 'email_validator'
   spec.add_development_dependency 'bundler', '~> 1.11'
+  spec.add_development_dependency 'factory_girl', '~> 4.8.0'
+  spec.add_development_dependency 'faker', '~> 1.8.4'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.51.0'
-  spec.add_development_dependency 'faker', '~> 1.8.4'
-  spec.add_development_dependency 'factory_girl', '~> 4.8.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.20.1'
 end

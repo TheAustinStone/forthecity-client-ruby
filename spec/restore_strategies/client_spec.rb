@@ -65,8 +65,8 @@ describe RestoreStrategies::Client do
 
     it 'responds with opportunities based on search parameters' do
       params = {
-        'issues' => %w(Education Children/Youth),
-        'region' => %w(South Central)
+        'issues' => %w[Education Children/Youth],
+        'region' => %w[South Central]
       }
 
       path = '/api/search?issues[]=Education&issues[]=Children%2FYouth&' \
@@ -83,8 +83,8 @@ describe RestoreStrategies::Client do
     it 'responds with opportunities based on text and search parameters' do
       params = {
         'q' => 'foster care',
-        'issues' => %w(Education Children/Youth),
-        'region' => %w(South Central)
+        'issues' => %w[Education Children/Youth],
+        'region' => %w[South Central]
       }
 
       path = '/api/search?q=foster+care&issues[]=Education&' \
@@ -101,7 +101,7 @@ describe RestoreStrategies::Client do
     it 'accepts symbol parameters' do
       params = {
         q: 'foster care',
-        issues: %w(Education Children/Youth)
+        issues: %w[Education Children/Youth]
       }
 
       path = '/api/search?q=foster+care&issues[]=Education&' \

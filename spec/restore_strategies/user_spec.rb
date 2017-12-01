@@ -82,20 +82,16 @@ describe RestoreStrategies::User do
     given_name = Faker::Name.first_name
     website = "http://#{Faker::Internet.domain_name}"
     hash = {
-      given_name: given_name,
-      family_name: Faker::Name.last_name,
+      given_name: given_name, family_name: Faker::Name.last_name,
       church: church_names[Random.rand(church_names.length - 1)],
-      church_size: Random.rand(8000),
-      website: website,
+      church_size: Random.rand(8000), website: website,
       email: 'seeded_user@example.com',
-      telephone: Faker::PhoneNumber.phone_number,
-      franchise_city: 'Austin',
+      telephone: Faker::PhoneNumber.phone_number, franchise_city: 'Austin',
       street_address: Faker::Address.street_address,
       address_locality: Faker::Address.city,
       address_region: Faker::Address.state,
       postal_code: Faker::Address.zip,
-      id: 1,
-      new_object: false
+      id: 1, new_object: false
     }
     user = described_class.new(hash)
     expect(user.save).not_to be false

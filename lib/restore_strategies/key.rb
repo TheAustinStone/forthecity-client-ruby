@@ -34,7 +34,7 @@ module RestoreStrategies
       @response = RestoreStrategies.client.post_item(@path, to_payload)
       code = @response.response.code
 
-      if code == '201' || code == '200'
+      if %w[201 200].include? code
         vars_from_response
         true
       else

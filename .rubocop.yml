@@ -5,6 +5,9 @@ Metrics/MethodLength:
           Max: 25
 Metrics/ClassLength:
           Max: 140
+Metrics/BlockLength:
+        Exclude:
+            - 'spec/**/*'
 Metrics/AbcSize:
           Max: 20
 Metrics/CyclomaticComplexity:
@@ -13,3 +16,7 @@ Metrics/PerceivedComplexity:
           Max: 8
 Style/MutableConstant:
           Enabled: false
+RSpec/ExampleLength:
+        Max: 21
+RSpec/MultipleExpectations:
+        Max: 3

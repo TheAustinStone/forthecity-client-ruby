@@ -24,8 +24,8 @@ module RestoreStrategies
       if json && response
         super(json: json, response: response)
       else
-        legal_keys = %w(given_name family_name telephone email comment
-                        numOfItemsCommitted lead campus opportunity_id)
+        legal_keys = %w[given_name family_name telephone email comment
+                        numOfItemsCommitted lead campus opportunity_id]
 
         data.each_pair do |key, value|
           next unless legal_keys.include?(key.to_s)
@@ -48,11 +48,7 @@ module RestoreStrategies
         payload
       )
 
-      if @response.response.code == '202'
-        true
-      else
-        false
-      end
+      @response.response.code == '202'
     end
 
     def self.where(user_id: nil)

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 # spec/support/factory_girl.rb
 # RSpec without Rails
 require 'factory_girl'

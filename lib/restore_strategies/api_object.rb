@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_model'
-require_relative'error'
+require_relative 'error'
 
 module RestoreStrategies
   # Generic class to manipulate API resources as Ruby classes
