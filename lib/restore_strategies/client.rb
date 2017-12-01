@@ -51,6 +51,10 @@ module RestoreStrategies
       api_request("#{path}/#{id}", 'GET')
     end
 
+    def delete_item(path, id)
+      api_request("#{path}/#{id}?delete=true", 'DELETE')
+    end
+
     def list_items(path)
       api_request(path, 'GET')
     end
@@ -78,6 +82,8 @@ module RestoreStrategies
 
       response = if verb == 'post'
                    http.post(path, payload, header)
+                 elsif verb == 'delete'
+                   http.delete(path, header)
                  else
                    http.get(path, header)
                  end
