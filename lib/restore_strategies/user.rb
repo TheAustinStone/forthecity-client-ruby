@@ -79,5 +79,9 @@ module RestoreStrategies
     def signups
       RestoreStrategies::Signup.where(user_id: id)
     end
+
+    def organizations
+      RestoreStrategies::Organization.collection(id)
+    end
   end
 end
