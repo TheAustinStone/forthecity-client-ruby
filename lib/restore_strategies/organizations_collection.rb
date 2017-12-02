@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RestoreStrategies
-  # Objectification of the API's organization
+  # A collection of organization objects
   class OrganizationCollection < Collection
     def initialize(collection = nil)
       super(Organization, collection)

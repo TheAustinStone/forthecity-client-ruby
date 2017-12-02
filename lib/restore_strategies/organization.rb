@@ -21,10 +21,6 @@ module RestoreStrategies
       @collection ||= OrganizationCollection.new
     end
 
-    def self.refresh_collection
-      items_from_response(RestoreStrategies.client.list_items(@path))
-    end
-
     def self.blacklist
       OrganizationCollection.new(
         items_from_response(
