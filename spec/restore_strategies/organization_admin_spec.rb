@@ -42,4 +42,11 @@ describe RestoreStrategies::Organization do
     }.by(1)
     expect(user.organizations.blacklist.count).to eq 0
   end
+
+  it 'searches orgs with parameters' do
+    expect(user.organizations.where(
+      name: 'Crescent Project',
+      id: '3'
+    ).count).to eq 1
+  end
 end

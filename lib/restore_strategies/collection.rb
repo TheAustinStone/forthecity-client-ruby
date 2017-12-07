@@ -28,6 +28,14 @@ module RestoreStrategies
       count
     end
 
+    def blank?
+      count.zero?
+    end
+
+    def refresh_collection
+      @collection = @klass.all
+    end
+
     def [](key)
       collection[key]
     end
@@ -42,6 +50,21 @@ module RestoreStrategies
       items.each { |item| @klass.remove(item) }
       @collection = @klass.all
       self
+    end
+
+    def where(**data)
+      cmds = []
+
+      data.each do |key, value|
+        val = if value.class == String
+                "'#{value}'"
+              else
+                value
+              end
+        cmds.push("i.#{key} == #{val}")
+      end
+
+      collection.find_all { |i| eval(cmds.join(' && ')) }
     end
 
     private
