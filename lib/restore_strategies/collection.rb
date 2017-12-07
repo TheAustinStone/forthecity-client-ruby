@@ -34,6 +34,7 @@ module RestoreStrategies
 
     def refresh_collection
       @collection = @klass.all
+      self
     end
 
     def [](key)
