@@ -6,7 +6,7 @@ require 'uri'
 module RestoreStrategies
   # Restore Strategies client
   class Client
-    attr_reader :entry_point
+    attr_reader :entry_point, :response
 
     # Initialize the Restore Strategies client
     #
@@ -19,6 +19,7 @@ module RestoreStrategies
       @entry_point = '/api'
       @token = token
       @secret = secret
+      @response = nil
 
       if url
         uri = URI(url)
@@ -38,12 +39,7 @@ module RestoreStrategies
         @port = port || 80
       end
 
-      @credentials = {
-        id: @token,
-        key: @secret,
-        algorithm: 'sha256'
-      }
-
+      @credentials = { id: @token, key: @secret, algorithm: 'sha256' }
       RestoreStrategies.client = self
     end
 
@@ -52,7 +48,7 @@ module RestoreStrategies
     end
 
     def delete_item(path, id)
-      api_request("#{path}/#{id}?delete=true", 'DELETE')
+      api_request("#{path}/#{id}", 'DELETE')
     end
 
     def list_items(path)
@@ -88,6 +84,7 @@ module RestoreStrategies
                    http.get(path, header)
                  end
 
+      @response = response
       response_case(response)
     end
 
@@ -110,7 +107,7 @@ module RestoreStrategies
       }
     end
 
-    # rubocop:disable CyclomaticComplexity, LiteralAsCondition
+    # rubocop:disable CyclomaticComplexity
     def response_case(response)
       case response.code
       when '500'
@@ -128,15 +125,17 @@ module RestoreStrategies
       when '403'
         # forbidden
         raise ForbiddenError.new(response), '403 error, forbidden'
-      when /^4/ && !'404'
+      when '422'
+        raise UnprocessableEntityError.new(response), '422 Unprocessable Entity'
+      when /(?!(^404$))^4[0-9]+/
         # 4xx client side error
-        raise ClientError.new(response, "client side #{code} error"),
-              "client side #{code} error"
+        raise ClientError.new(response, "client side #{response.code} error"),
+              "client side #{response.code} error"
       else
         Response.new(response, response.body)
       end
     end
-    # rubocop:enable CyclomaticComplexity, LiteralAsCondition
+    # rubocop:enable CyclomaticComplexity
 
     def params_to_string(params)
       query = []

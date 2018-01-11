@@ -94,4 +94,22 @@ describe RestoreStrategies::Opportunity do
       expect(opps).to all be_a(described_class)
     end
   end
+
+  describe 'feature' do
+    it 'features an opportunity' do
+      expect(described_class.feature(id: 1, user_id: 1)).to be true
+    end
+
+    it 'allows an admin to view a user\'s featured opportunities' do
+      expect(described_class.featured(user_id: 1).length).to be 1
+    end
+
+    it 'allows users to view their own featured opportunities' do
+      expect(described_class.featured.length).to be 1
+    end
+
+    it 'unfeatures an opportunity' do
+      expect(described_class.unfeature(id: 1, user_id: 1)).to be true
+    end
+  end
 end

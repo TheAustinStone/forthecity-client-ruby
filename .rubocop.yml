@@ -9,7 +9,7 @@ Metrics/BlockLength:
         Exclude:
             - 'spec/**/*'
 Metrics/AbcSize:
-          Max: 20
+          Max: 21
 Metrics/CyclomaticComplexity:
           Severity: warning
 Metrics/PerceivedComplexity:

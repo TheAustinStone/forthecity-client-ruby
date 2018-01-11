@@ -51,6 +51,16 @@ module RestoreStrategies
     end
   end
 
+  # For HTTP 422 errors
+  class UnprocessableEntityError < ResponseError
+    def initialize(response)
+      body = JSON.parse(response.body)
+      message =
+        "Unable to process request: #{body['collection']['error']['message']}"
+      super(response, message)
+    end
+  end
+
   # For HTTP 404 errors
   class NotFoundError < ResponseError
   end
