@@ -3,9 +3,11 @@
 module RestoreStrategies
   # Holds a collection of klass objects
   #
-  # The klass must provide an all method that returns an array of klass
-  # objects; an add method which adds an item to the collection; a remove method
-  # which removes an item from the collection.
+  # The klass is expected to provide the following methods:
+  #
+  # - *all* returns an array of klass objects. This is required.
+  # - *add* adds an item to the collection
+  # - *remove* removes an item from the collection.
   #
   # The collection is lazy loaded & saved. So it won't be requested multiple
   # times from the server unless an action that alters it is performed.
