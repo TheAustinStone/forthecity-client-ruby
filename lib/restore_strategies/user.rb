@@ -73,7 +73,7 @@ module RestoreStrategies
     end
 
     def keys
-      RestoreStrategies::Key.caller(id)
+      RestoreStrategies::Key.collection(id)
     end
 
     def signups

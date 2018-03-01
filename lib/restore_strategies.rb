@@ -15,6 +15,7 @@ require_relative 'restore_strategies/key'
 require_relative 'restore_strategies/organization'
 require_relative 'restore_strategies/collection'
 require_relative 'restore_strategies/organizations_collection'
+require_relative 'restore_strategies/keys_collection'
 
 # Restore Strategies module
 module RestoreStrategies
