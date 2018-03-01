@@ -19,7 +19,9 @@ describe RestoreStrategies::Key do
 
   it 'creates a key for a user' do
     txt = "created on #{Time.now.to_f}"
-    key = user.keys.create(active: true, description: txt, domain: 'test.com')
+    key = user.keys.create(
+      active: true, description: txt, domain: 'test.com', citysync: false
+    )
     expect(key.class).to be described_class
     expect(key.description).to eq txt
     expect(key.domain).to eq 'test.com'
