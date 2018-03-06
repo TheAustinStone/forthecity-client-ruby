@@ -3,6 +3,7 @@
 module RestoreStrategies
   # Objectification of the API's key
   class Key < ApiObject
+    extend RestoreStrategies::Collectable
     include RestoreStrategies::POSTing
 
     attr_accessor :active, :description, :secret, :token, :city, :church,
@@ -16,12 +17,6 @@ module RestoreStrategies
         @path = "/api/admin/users/#{data[:user_id]}/keys"
       end
       field_attr :active, :description, :domain, :citysync
-    end
-
-    def self.collection(id)
-      @user_id = id
-      @path = "/api/admin/users/#{id}/keys"
-      @collection ||= KeyCollection.new
     end
 
     def self.create(**data)
@@ -40,6 +35,17 @@ module RestoreStrategies
       else
         false
       end
+    end
+
+    private_class_method :collection_vars, :new_collection
+
+    def self.collection_vars(id)
+      @user_id = id
+      @path = "/api/admin/users/#{id}/keys"
+    end
+
+    def self.new_collection
+      KeyCollection.new
     end
   end
 end
