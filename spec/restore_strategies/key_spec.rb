@@ -31,4 +31,12 @@ describe RestoreStrategies::Key do
     keys = user.keys
     expect(keys.length).to be > 45
   end
+
+  it 'removes a user\'s key' do
+    key = user.keys.last
+
+    expect { user.keys.delete(key) }.to change {
+      user.keys.count
+    }.by(-1)
+  end
 end
