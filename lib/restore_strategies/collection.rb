@@ -30,6 +30,14 @@ module RestoreStrategies
       count
     end
 
+    def first
+      collection[0]
+    end
+
+    def last
+      collection[collection.count - 1]
+    end
+
     def blank?
       count.zero?
     end
