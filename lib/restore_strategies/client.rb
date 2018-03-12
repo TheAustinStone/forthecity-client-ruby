@@ -75,6 +75,7 @@ module RestoreStrategies
       verb = verb.downcase
       header = request_header(path, verb, payload)
       http = Net::HTTP.new(@host, @port)
+      http.use_ssl = true if @port == 443
 
       response = if verb == 'post'
                    http.post(path, payload, header)
@@ -103,7 +104,8 @@ module RestoreStrategies
       {
         'Content-type' => 'application/vnd.collection+json',
         'api-version' => '1',
-        'Authorization' => auth
+        'Authorization' => auth,
+        'User-agent' => "Ruby Client/#{RestoreStrategies::VERSION}"
       }
     end
 
