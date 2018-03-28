@@ -7,7 +7,7 @@ module RestoreStrategies
     include RestoreStrategies::POSTing
 
     attr_accessor :active, :description, :secret, :token, :city, :church,
-                  :user_id, :domain, :citysync
+                  :user_id, :domain, :citysync, :test
 
     def initialize(json: nil, response: nil, **data)
       if json && response
@@ -16,7 +16,7 @@ module RestoreStrategies
         self.instance_vars = data
         @path = "/api/admin/users/#{data[:user_id]}/keys"
       end
-      field_attr :active, :description, :domain, :citysync
+      field_attr :active, :description, :domain, :citysync, :test
     end
 
     def self.create(**data)
