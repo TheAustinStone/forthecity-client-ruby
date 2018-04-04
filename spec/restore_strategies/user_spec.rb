@@ -100,12 +100,6 @@ describe RestoreStrategies::User do
     expect(user_updated.website).to eq website
   end
 
-  it 'gets list of signups' do
-    signups = described_class.find(1).signups
-    expect(signups.class).to be Array
-    expect(signups.first.class).to be RestoreStrategies::Signup
-  end
-
   it 'creates a new user with reseller' do
     user = described_class.create(
       given_name: Faker::Name.first_name,

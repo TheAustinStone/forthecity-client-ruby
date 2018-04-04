@@ -42,7 +42,7 @@ module RestoreStrategies
       count.zero?
     end
 
-    def refresh_collection
+    def refresh!
       @collection = @klass.all
       self
     end
@@ -53,14 +53,12 @@ module RestoreStrategies
 
     def <<(*items)
       items.each { |item| @klass.add(item) }
-      @collection = @klass.all
-      self
+      refresh!
     end
 
     def delete(*items)
       items.each { |item| @klass.remove(item) }
-      @collection = @klass.all
-      self
+      refresh!
     end
 
     def where(**data)

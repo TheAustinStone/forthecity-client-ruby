@@ -9,12 +9,14 @@ require 'phoner'
 module RestoreStrategies
   # Signup class
   class Signup < ApiObject
+    extend RestoreStrategies::Collectable
     include RestoreStrategies::POSTing
 
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
                   :numOfItemsCommitted, :lead, :opportunity_id, :response,
                   :campus
-    attr_reader :updated_at, :created_at, :opportunity_name, :organization_name
+    attr_reader :updated_at, :created_at, :opportunity_name, :organization_name,
+                :issues, :level
 
     validates :given_name, :family_name, :opportunity_id, presence: true
     validates :email, email: true
@@ -51,9 +53,14 @@ module RestoreStrategies
       @response.response.code == '202'
     end
 
-    def self.where(user_id: nil)
-      path = "/api/admin/users/#{user_id}/signups"
-      items_from_response(RestoreStrategies.client.list_items(path))
+    private_class_method :collection_vars, :new_collection
+
+    def self.collection_vars(id)
+      @path = "/api/admin/users/#{id}/signups"
+    end
+
+    def self.new_collection
+      SignupCollection.new
     end
   end
 

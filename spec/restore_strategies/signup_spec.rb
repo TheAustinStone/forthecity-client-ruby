@@ -13,6 +13,8 @@ describe RestoreStrategies::Signup do
     )
   end
 
+  let(:user) { RestoreStrategies::User.find(1) }
+
   let(:params) do
     {
       given_name: 'Jon',
@@ -25,9 +27,8 @@ describe RestoreStrategies::Signup do
   end
 
   it 'gets list of signups for an API user' do
-    signups = described_class.where(user_id: 1)
-    expect(signups.class).to be Array
-    expect(signups.first.class).to be described_class
+    signups = user.signups
+    expect(signups).to all be_a(described_class)
   end
 
   describe 'validity' do
