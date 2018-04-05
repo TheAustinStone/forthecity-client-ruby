@@ -8,8 +8,7 @@ require 'phoner'
 
 module RestoreStrategies
   # Signup class
-  class Signup < ApiObject
-    extend RestoreStrategies::Collectable
+  class Signup < ApiCollectable
     include RestoreStrategies::POSTing
 
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
@@ -34,6 +33,7 @@ module RestoreStrategies
 
           instance_variable_set("@#{key}", value)
         end
+        @path = "/api/admin/users/#{data[:user_id]}/signups"
       end
 
       field_attr :given_name, :family_name, :telephone, :email, :comment,
@@ -51,16 +51,6 @@ module RestoreStrategies
       )
 
       @response.response.code == '202'
-    end
-
-    private_class_method :collection_vars, :new_collection
-
-    def self.collection_vars(id)
-      @path = "/api/admin/users/#{id}/signups"
-    end
-
-    def self.new_collection
-      SignupCollection.new
     end
   end
 

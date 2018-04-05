@@ -17,8 +17,9 @@ module RestoreStrategies
   class Collection
     include Enumerable
 
-    def initialize(klass, collection = nil)
+    def initialize(klass, collection = nil, path = nil)
       @klass = klass
+      @path = path
       @collection = collection
     end
 

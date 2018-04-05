@@ -73,15 +73,15 @@ module RestoreStrategies
     end
 
     def keys
-      RestoreStrategies::Key.collection(id)
+      @keys ||= RestoreStrategies::KeyCollection.new(nil, id)
     end
 
     def signups
-      RestoreStrategies::Signup.collection(id)
+      @signups ||= RestoreStrategies::SignupCollection.new(nil, id)
     end
 
     def organizations
-      RestoreStrategies::Organization.collection(id)
+      @orgs ||= RestoreStrategies::OrganizationCollection.new(nil, id)
     end
   end
 end

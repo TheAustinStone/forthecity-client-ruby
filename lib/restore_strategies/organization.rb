@@ -2,8 +2,7 @@
 
 module RestoreStrategies
   # Objectification of the API's organization
-  class Organization < ApiObject
-    extend RestoreStrategies::Collectable
+  class Organization < ApiCollectable
     include RestoreStrategies::POSTing
 
     attr_reader :id, :name, :website, :description
@@ -13,26 +12,18 @@ module RestoreStrategies
         super(json: json, response: response)
       else
         self.instance_vars = data
+        @path = "/api/admin/users/#{data[:user_id]}/organizations"
       end
       field_attr :id, :name, :website, :description
     end
 
-    def self.blacklist
+    def blacklist
       OrganizationCollection.new(
         items_from_response(
           RestoreStrategies.client.list_items("#{@path}/blacklist")
-        )
+        ),
+        @user_id
       )
-    end
-
-    private_class_method :collection_vars, :new_collection
-
-    def self.collection_vars(id)
-      @path = "/api/admin/users/#{id}/organizations"
-    end
-
-    def self.new_collection
-      OrganizationCollection.new
     end
   end
 end

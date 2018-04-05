@@ -69,10 +69,10 @@ module RestoreStrategies
       end
     end
 
-    def self.find(id)
+    def self.find(id, path = nil)
       raise ArgumentError, 'id must be integer' unless id.is_a? Integer
 
-      api_response = RestoreStrategies.client.get_item(@path, id)
+      api_response = RestoreStrategies.client.get_item(url_path(path), id)
 
       case api_response.response.code.to_i
       when 200
@@ -94,12 +94,16 @@ module RestoreStrategies
       results
     end
 
-    def self.all
-      items_from_response(RestoreStrategies.client.list_items(@path))
+    def self.all(path = nil)
+      items_from_response(RestoreStrategies.client.list_items(url_path(path)))
     end
 
-    def self.first
-      all.first
+    def self.first(path = nil)
+      all(path).first
+    end
+
+    def self.url_path(path)
+      path || @path
     end
   end
 end
