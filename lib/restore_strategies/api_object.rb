@@ -37,13 +37,17 @@ module RestoreStrategies
     private :response_data
 
     def value_of(datum)
-      if !datum['value'].nil?
-        datum['value']
-      elsif !datum['array'].nil?
-        datum['array']
-      elsif !datum['object'].nil?
-        datum['object']
-      end
+      v = if !datum['value'].nil?
+            datum['value']
+          elsif !datum['array'].nil?
+            datum['array']
+          elsif !datum['object'].nil?
+            datum['object']
+          end
+
+      return Time.parse(v) if %w[created_at updated_at].include?(datum['name'])
+
+      v
     end
     private :value_of
 
