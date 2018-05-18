@@ -22,6 +22,7 @@ describe RestoreStrategies::Signup do
       email: 'jon.doe@example.com',
       telephone: '5124567890',
       campus: 'Test Campus',
+      church: 'Test Church',
       opportunity_id: 37
     }
   end
@@ -71,6 +72,11 @@ describe RestoreStrategies::Signup do
     it 'has a campus attribute' do
       signup = described_class.new(params)
       expect(signup.campus).to eq('Test Campus')
+    end
+
+    it 'has a church attribute' do
+      signup = described_class.new(params)
+      expect(signup.church).to eq('Test Church')
     end
 
     it 'validates correct inputs' do

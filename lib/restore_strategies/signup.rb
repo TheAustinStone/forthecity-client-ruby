@@ -13,7 +13,7 @@ module RestoreStrategies
 
     attr_accessor :given_name, :family_name, :telephone, :email, :comment,
                   :numOfItemsCommitted, :lead, :opportunity_id, :response,
-                  :campus
+                  :campus, :church
     attr_reader :updated_at, :created_at, :opportunity_name, :organization_name,
                 :issues, :level
 
@@ -26,7 +26,7 @@ module RestoreStrategies
         super(json: json, response: response)
       else
         legal_keys = %w[given_name family_name telephone email comment
-                        numOfItemsCommitted lead campus opportunity_id]
+                        numOfItemsCommitted lead campus church opportunity_id]
 
         data.each_pair do |key, value|
           next unless legal_keys.include?(key.to_s)
@@ -37,7 +37,7 @@ module RestoreStrategies
       end
 
       field_attr :given_name, :family_name, :telephone, :email, :comment,
-                 :numOfItemsCommitted, :lead, :campus
+                 :numOfItemsCommitted, :lead, :campus, :church
     end
 
     def save
