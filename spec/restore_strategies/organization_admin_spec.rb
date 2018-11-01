@@ -26,7 +26,7 @@ describe RestoreStrategies::Organization do
 
     expect { user.organizations.delete(org) }.to change {
       user.organizations.count
-    }.from(2).to(1)
+    }.from(1).to(0)
   end
 
   it 'lists a user\'s blacklisted organizations' do
@@ -45,8 +45,8 @@ describe RestoreStrategies::Organization do
 
   it 'searches orgs with parameters' do
     expect(user.organizations.where(
-      name: 'Crescent Project',
-      id: '3'
+      name: 'Wonders & Worries',
+      id: '2'
     ).count).to eq 1
   end
 end

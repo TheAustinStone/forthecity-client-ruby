@@ -29,7 +29,7 @@ describe RestoreStrategies::Key do
 
   it 'lists a user\'s keys' do
     keys = user.keys
-    expect(keys.length).to be > 45
+    keys.each { |key| expect(key.class).to be described_class }
   end
 
   it 'removes a user\'s key' do
