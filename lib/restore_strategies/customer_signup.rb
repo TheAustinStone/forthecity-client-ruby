@@ -3,6 +3,10 @@
 module RestoreStrategies
   # Objectification of the API's organization
   class CustomerSignup < ApiCollectable
+    attr_reader :updated_at, :created_at, :opportunity_name, :organization_name,
+                :issues, :level, :items_committed, :church, :api_user, :user_id,
+                :reseller_id
+
     def initialize(json: nil, response: nil, **data)
       if json && response
         super(json: json, response: response)
