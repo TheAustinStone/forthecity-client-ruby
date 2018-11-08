@@ -18,6 +18,9 @@ require_relative 'restore_strategies/organization'
 require_relative 'restore_strategies/organizations_collection'
 require_relative 'restore_strategies/keys_collection'
 require_relative 'restore_strategies/signups_collection'
+require_relative 'restore_strategies/customer'
+require_relative 'restore_strategies/customer_signup'
+require_relative 'restore_strategies/customer_signups_collection'
 
 # Restore Strategies module
 module RestoreStrategies

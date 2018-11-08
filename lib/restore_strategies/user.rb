@@ -83,5 +83,9 @@ module RestoreStrategies
     def organizations
       @orgs ||= RestoreStrategies::OrganizationCollection.new(nil, id)
     end
+
+    def customers
+      @customers ||= RestoreStrategies::Customer.new(id)
+    end
   end
 end
