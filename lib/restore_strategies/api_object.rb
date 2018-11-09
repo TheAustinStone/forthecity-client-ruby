@@ -19,6 +19,7 @@ module RestoreStrategies
 
       json['data'].each do |datum|
         instance_variable_set("@#{datum['name'].underscore}", value_of(datum))
+        self.class.send(:attr_reader, datum['name'].underscore.to_sym)
       end
     end
 
@@ -55,6 +56,7 @@ module RestoreStrategies
     def instance_vars=(data)
       data.each_pair do |key, value|
         instance_variable_set("@#{key}", value)
+        self.class.send(:attr_reader, key.to_sym)
       end
     end
     private :instance_vars=
