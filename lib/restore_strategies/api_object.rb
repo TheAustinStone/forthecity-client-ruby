@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_model'
+require 'time'
 require_relative 'error'
 
 module RestoreStrategies
