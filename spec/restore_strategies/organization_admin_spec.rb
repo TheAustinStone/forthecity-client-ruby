@@ -49,4 +49,10 @@ describe RestoreStrategies::Organization do
       id: '2'
     ).count).to eq 1
   end
+
+  it 'searches orgs with a string' do
+    expect(user.organizations.where(
+      'name == ? and id > ?', 'Wonders & Worries', '1'
+    ).count).to eq 1
+  end
 end

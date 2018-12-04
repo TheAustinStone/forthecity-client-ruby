@@ -61,22 +61,69 @@ module RestoreStrategies
       refresh!
     end
 
-    def where(**data)
-      cmds = []
+    #
+    # where(
+    #   'created_at > ? and created_at <= ? AND campus == ?',
+    #   Date.today - 5,
+    #   Date.today,
+    #   'North Campus'
+    # )
+    #
+    # OR
+    #
+    # where(email: 'example@example.com', campus: 'Test Campus')
+    def where(*str_opts, **hash_opts)
+      cmds = transform_arguments(str_opts, hash_opts)
 
-      data.each do |key, value|
-        val = if value.class == String
-                "'#{value}'"
-              else
-                value
-              end
-        cmds.push("i.#{key} == #{val}")
-      end
+      cmds.each_index { |i| cmds[i] = 'i.' + cmds[i] }
 
       collection.find_all { |i| eval(cmds.join(' && ')) }
     end
 
     private
+
+    def transform_arguments(str_opts, hash_opts)
+      return transform_strings(str_opts) if str_opts.count.positive?
+      transform_hash(hash_opts)
+    end
+
+    def transform_hash(hash_opts)
+      transformed = []
+
+      hash_opts.each do |key, value|
+        val = if value.class == String
+                "'#{value}'"
+              else
+                value
+              end
+        transformed.push("#{key} == #{val}")
+      end
+
+      transformed
+    end
+
+    def transform_strings(str_opts)
+      unless str_opts[0].class == String
+        raise(ArgumentError, 'String expected as first argument')
+      end
+
+      statements = str_opts.delete_at(0).strip.split(/[\s]+and[\s]+/i)
+
+      errmsg = "Wrong number of arguments: #{statements.count} provided, " \
+               "#{str_opts.count} expected"
+
+      raise(ArgumentError, errmsg) unless statements.count == str_opts.count
+
+      statements.each_index do |i|
+        if str_opts[i].class == String
+          statements[i].gsub!('?', "'#{str_opts[i]}'")
+        else
+          statements[i].gsub!('?', str_opts[i].to_s)
+        end
+      end
+
+      statements
+    end
 
     def collection
       @collection ||= @klass.all
