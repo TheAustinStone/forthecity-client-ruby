@@ -21,6 +21,15 @@ module RestoreStrategies
         instance_variable_set("@#{datum['name'].underscore}", value_of(datum))
         self.class.send(:attr_reader, datum['name'].underscore.to_sym)
       end
+
+      if @created_at
+        @created_at_date = @created_at.to_date
+        self.class.send(:attr_reader, :created_at_date)
+      end
+
+      return unless @updated_at
+      @updated_at_date = @updated_at.to_date
+      self.class.send(:attr_reader, :updated_at_date)
     end
 
     # For Rails API
