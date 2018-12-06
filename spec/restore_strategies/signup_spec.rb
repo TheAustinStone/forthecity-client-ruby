@@ -32,6 +32,25 @@ describe RestoreStrategies::Signup do
     expect(signups).to all be_a(described_class)
   end
 
+  it 'searches signups with hash' do
+    user.signups.where(
+      email: 'jon.doe@example.com', items_committed: '1'
+    ).each do |signup|
+      expect(signup.email).to eq 'jon.doe@example.com'
+      expect(signup.items_committed).to eq '1'
+    end
+  end
+
+  it 'searches signups with a string' do
+    user.signups.where(
+      'created_at_date < ? and email == ?',
+      Date.today, 'jon.doe@example.com'
+    ).each do |signup|
+      expect(signup.email).to eq 'jon.doe@example.com'
+      expect(signup.created_at_date).to be < Date.today
+    end
+  end
+
   describe 'validity' do
     it 'requires given name' do
       params.delete(:given_name)

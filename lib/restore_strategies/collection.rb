@@ -61,7 +61,6 @@ module RestoreStrategies
       refresh!
     end
 
-    #
     # where(
     #   'created_at > ? and created_at <= ? AND campus == ?',
     #   Date.today - 5,
@@ -75,51 +74,75 @@ module RestoreStrategies
     def where(*str_opts, **hash_opts)
       cmds = transform_arguments(str_opts, hash_opts)
 
-      cmds.each_index { |i| cmds[i] = 'i.' + cmds[i] }
-
-      collection.find_all { |i| eval(cmds.join(' && ')) }
+      collection.find_all do |i|
+        bools = []
+        cmds.each do |cmd|
+          bools.push(compare(i, cmd))
+        end
+        bools.all?
+      end
     end
 
     private
 
+    def compare(object, opts)
+      val = object.public_send(opts[:key].to_sym)
+      val.public_send(opts[:operand], opts[:value])
+    end
+
+    # Returns an array of key, operand & value hashes. The key can be compared
+    # to the value using the operand.
+    #
+    # e.g.
+    # [
+    #   { key: 'created_at', operand: '>', value: Time.now },
+    #   { key: 'email', operand: '==', value: 'jon.doe@example.com' }
+    # ]
     def transform_arguments(str_opts, hash_opts)
       return transform_strings(str_opts) if str_opts.count.positive?
       transform_hash(hash_opts)
     end
 
+    # e.g.
+    # transform_hash({ email: 'jon.doe@example.com', items_committed: '1' })
     def transform_hash(hash_opts)
       transformed = []
 
       hash_opts.each do |key, value|
-        val = if value.class == String
-                "'#{value}'"
-              else
-                value
-              end
-        transformed.push("#{key} == #{val}")
+        transformed.push(key: key, operand: '==', value: value)
       end
 
       transformed
     end
 
     def transform_strings(str_opts)
+      # e.g.
+      #
+      # [
+      #   'created_at_date < ? and email == ?',
+      #   Date.today,
+      #   'jon.doe@example.com'
+      # ]
+
       unless str_opts[0].class == String
         raise(ArgumentError, 'String expected as first argument')
       end
 
       statements = str_opts.delete_at(0).strip.split(/[\s]+and[\s]+/i)
 
-      errmsg = "Wrong number of arguments: #{statements.count} provided, " \
-               "#{str_opts.count} expected"
+      unless statements.count == str_opts.count
+        errmsg = "Wrong number of arguments: #{statements.count} provided, " \
+                 "#{str_opts.count} expected"
 
-      raise(ArgumentError, errmsg) unless statements.count == str_opts.count
+        raise(ArgumentError, errmsg) 
+      end
 
       statements.each_index do |i|
-        if str_opts[i].class == String
-          statements[i].gsub!('?', "'#{str_opts[i]}'")
-        else
-          statements[i].gsub!('?', str_opts[i].to_s)
-        end
+        statements[i] = {
+          key: /\A[\w]+/.match(statements[i].strip).to_s,
+          operand: /[<=>]+/.match(statements[i].strip).to_s,
+          value: str_opts[i]
+        }
       end
 
       statements
