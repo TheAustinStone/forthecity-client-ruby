@@ -134,7 +134,7 @@ module RestoreStrategies
         errmsg = "Wrong number of arguments: #{statements.count} provided, " \
                  "#{str_opts.count} expected"
 
-        raise(ArgumentError, errmsg) 
+        raise(ArgumentError, errmsg)
       end
 
       statements.each_index do |i|

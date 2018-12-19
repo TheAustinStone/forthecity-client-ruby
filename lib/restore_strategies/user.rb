@@ -9,7 +9,8 @@ module RestoreStrategies
                   :franchise_city, :website, :street_address, :address_locality,
                   :address_region, :postal_code, :email, :uuid,
                   :subscription_id, :plan_id, :addon_id, :plan_level,
-                  :created_at, :updated_at, :telephone, :reseller_id
+                  :created_at, :updated_at, :telephone, :reseller_id,
+                  :auto_approve_orgs
 
     @path = '/api/admin/users'
     validates :given_name, :family_name, :church, :church_size,
@@ -34,7 +35,7 @@ module RestoreStrategies
                   :franchise_city, :website, :street_address, :address_locality,
                   :address_region, :postal_code, :email, :uuid, :telephone,
                   :subscription_id, :plan_id, :addon_id, :plan_level,
-                  :reseller_id
+                  :reseller_id, :auto_approve_orgs
     end
 
     def self.create(**data)
