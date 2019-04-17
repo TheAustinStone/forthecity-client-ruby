@@ -13,9 +13,8 @@ module RestoreStrategies
                   :auto_approve_orgs
 
     @path = '/api/admin/users'
-    validates :given_name, :family_name, :church, :church_size,
-              :franchise_city, :website, :street_address, :address_locality,
-              :address_region, :postal_code, presence: true
+    validates :given_name, :family_name, :church,:website, :street_address,
+              :address_locality, :address_region, :postal_code, presence: true
     validates :email, email: true
 
     def initialize(json: nil, response: nil, **data)
