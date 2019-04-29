@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_model'
-require_relative 'collection_json_utils'
 require_relative '../validators/phone_validator.rb'
 require 'email_validator'
 require 'phoner'

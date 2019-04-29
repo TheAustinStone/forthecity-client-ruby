@@ -3,7 +3,7 @@
 module RestoreStrategies
   # Objectification of the API's user
   class User < ApiObject
-    include RestoreStrategies::POSTing
+    include RestoreStrategies::Updateable
 
     attr_accessor :given_name, :family_name, :church, :church_size,
                   :franchise_city, :website, :street_address, :address_locality,
@@ -13,7 +13,7 @@ module RestoreStrategies
                   :auto_approve_orgs
 
     @path = '/api/admin/users'
-    validates :given_name, :family_name, :church,:website, :street_address,
+    validates :given_name, :family_name, :church, :website, :street_address,
               :address_locality, :address_region, :postal_code, presence: true
     validates :email, email: true
 
@@ -37,39 +37,12 @@ module RestoreStrategies
                   :reseller_id, :auto_approve_orgs
     end
 
-    def self.create(**data)
-      obj = new(data)
-      obj.save_and_check
+    def create_path
+      '/api/admin/users'
     end
 
-    def save
-      return false unless valid?
-
-      path = if new_object?
-               '/api/admin/users'
-             else
-               "/api/admin/users/#{id}"
-             end
-
-      @response = RestoreStrategies.client.post_item(path, to_payload)
-      code = @response.response.code
-
-      if %w[201 200].include? code
-        @new_record = false
-        vars_from_response
-        true
-      else
-        false
-      end
-    end
-
-    def save!
-      save
-    end
-
-    def update(**data)
-      self.instance_vars = data
-      save_and_check
+    def update_path
+      "/api/admin/users/#{id}"
     end
 
     def keys
@@ -86,6 +59,13 @@ module RestoreStrategies
 
     def customers
       @customers ||= RestoreStrategies::Customer.new(id)
+    end
+
+    def opportunities
+      @opportunities ||=
+        RestoreStrategies::OrganizationOpportunityCollection.new(
+          nil, organization_id
+        )
     end
   end
 end

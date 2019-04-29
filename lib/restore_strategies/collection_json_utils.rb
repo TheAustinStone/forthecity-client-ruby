@@ -19,7 +19,13 @@ module RestoreStrategies
     end
 
     def self.build_element(key, value)
-      { 'name' => key.camelize(:lower), 'value' => value }
+      if value.is_a? Array
+        { 'name' => key.camelize(:lower), 'array' => value }
+      elsif value.is_a? Hash
+        { 'name' => key.camelize(:lower), 'object' => value }
+      else
+        { 'name' => key.camelize(:lower), 'value' => value }
+      end
     end
 
     def self.parse_element(json)
