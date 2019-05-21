@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RestoreStrategies
   # A module for API objects that can be created and also updated
   #

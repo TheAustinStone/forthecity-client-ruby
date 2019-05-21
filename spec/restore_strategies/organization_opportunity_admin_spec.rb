@@ -14,7 +14,7 @@ describe RestoreStrategies::OrganizationOpportunity do
   end
 
   let(:user) do
-    RestoreStrategies::User.find(17603)
+    RestoreStrategies::User.find(17_603)
   end
 
   it 'lists a user\'s opportunities' do
@@ -23,9 +23,7 @@ describe RestoreStrategies::OrganizationOpportunity do
 
   it 'can create an opportunity' do
     opp = described_class.new(
-      name: 'Test',
-      regions: ['North', 'South'],
-      times: ['Morning'],
+      name: 'Test', regions: %w[North South], times: ['Morning'],
       coordinator: {
         givenName: Faker::Name.first_name,
         familyName: Faker::Name.last_name,
@@ -34,20 +32,22 @@ describe RestoreStrategies::OrganizationOpportunity do
       },
       ongoing: true,
       location: "#{Faker::Address.street_address} #{Faker::Address.city}",
-      status: "Removed by nonprofit",
-      cities: [Faker::Address.city],
-      days: ['Sunday', 'Friday'],
+      status: 'Removed by nonprofit',
+      cities: [Faker::Address.city], days: %w[Sunday Friday],
       level: ['Walk'],
       description: Faker::Hipster.paragraph(1, false, 2),
-      issues: ['Education', 'Homelessness'],
-      type: 'Service',
-      group_types: ['Family', 'Group'],
-      municipalities: ['Round Rock', 'Hyde Park'],
+      issues: %w[Education Homelessness], type: 'Service',
+      group_types: %w[Family Group], municipalities: %w[Round Rock Hyde Park],
       organization_sfid: '1234567XYZ',
-      organization_id: 662,
+      organization_id: 662
     )
 
     expect(opp.save).to be true
-    expect(opp.id.to_i > 0).to be true 
+    expect(opp.id.to_i > 0).to be true
+  end
+
+  it 'updates an opportunity' do
+    opp = user.opportunities.where(id: '1').first
+    expect(opp.update(type: 'Service', coordinator: { id: 3 })).not_to be false
   end
 end
