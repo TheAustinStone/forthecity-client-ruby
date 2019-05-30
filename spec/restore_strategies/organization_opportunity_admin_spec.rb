@@ -21,6 +21,11 @@ describe RestoreStrategies::OrganizationOpportunity do
     user.opportunities.each { |o| expect(o.class).to be described_class }
   end
 
+  it 'has a person as the coordinator' do
+    opp = user.opportunities.last
+    expect(opp.coordinator.class).to be RestoreStrategies::Person
+  end
+
   it 'can create an opportunity' do
     opp = described_class.new(
       name: 'Test', regions: %w[North South], times: ['Morning'],

@@ -13,6 +13,13 @@ module RestoreStrategies
     def initialize(json: nil, response: nil, **data)
       if json && response
         super(json: json, response: response)
+
+        if @coordinator
+          @coordinator = RestoreStrategies::Person.new(
+            json: @coordinator,
+            response: response
+          )
+        end
       else
         self.instance_vars = data
         @path = "/api/admin/organizations/#{data[:organization_id]}" \
