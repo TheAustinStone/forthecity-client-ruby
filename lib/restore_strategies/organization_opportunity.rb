@@ -15,10 +15,11 @@ module RestoreStrategies
         super(json: json, response: response)
 
         if @coordinator
-          @coordinator = RestoreStrategies::Person.new(
+          @coordinator_object = RestoreStrategies::Person.new(
             json: @coordinator,
             response: response
           )
+          self.class.send(:attr_accessor, :coordinator_object)
         end
       else
         self.instance_vars = data
@@ -30,6 +31,16 @@ module RestoreStrategies
                       else
                         true
                       end
+
+        if @coordinator_object
+          @coordinator = {
+            givenName: @coordinator_object.given_name,
+            familyName: @coordinator_object.family_name,
+            email: @coordinator_object.email,
+            telephone: @coordinator_object.telephone,
+            id: @coordinator_object.id
+          }
+        end
       end
 
       field_attr :id, :name, :type, :closed, :description, :location,
