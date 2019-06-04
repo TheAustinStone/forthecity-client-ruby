@@ -53,6 +53,8 @@ describe RestoreStrategies::OrganizationOpportunity do
 
   it 'updates an opportunity' do
     opp = user.opportunities.where(id: '1').first
-    expect(opp.update(type: 'Service')).not_to be false
+    type = ['Service', 'Event', 'Gift'].sample
+    expect(opp.update(type: type, municipalities: ['Waco'])).not_to be false
+    expect(opp.type).to eq type
   end
 end

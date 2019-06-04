@@ -10,6 +10,11 @@ module RestoreStrategies
               :organization_sfid, :organization_id, :group_types,
               :municipalities, presence: true
 
+    attr_accessor :name, :regions, :times, :coordinator, :ongoing, :location,
+                  :status, :days, :level, :description, :issues, :type,
+                  :organization_sfid, :organization_id, :group_types,
+                  :municipalities
+
     def initialize(json: nil, response: nil, **data)
       if json && response
         super(json: json, response: response)
