@@ -23,6 +23,8 @@ module RestoreStrategies
         { 'name' => key.camelize(:lower), 'array' => value }
       elsif value.is_a? Hash
         { 'name' => key.camelize(:lower), 'object' => value }
+      elsif value.is_a? RestoreStrategies::ApiObject
+        { 'name' => key.camelize(:lower), 'object' => value.to_payload(false) }
       else
         { 'name' => key.camelize(:lower), 'value' => value }
       end
@@ -45,9 +47,13 @@ module RestoreStrategies
       end
     end
 
-    def to_payload
+    def to_payload(string = true)
       json_obj = CollectionJson.build_template(self)
-      JSON.generate json_obj
+      if string
+        JSON.generate json_obj
+      else
+        json_obj
+      end
     end
   end
 end

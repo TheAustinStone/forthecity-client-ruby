@@ -23,13 +23,13 @@ describe RestoreStrategies::OrganizationOpportunity do
 
   it 'has a person as the coordinator' do
     opp = user.opportunities.last
-    expect(opp.coordinator_object.class).to be RestoreStrategies::Person
+    expect(opp.coordinator.class).to be RestoreStrategies::Person
   end
 
   it 'can create an opportunity' do
     opp = described_class.new(
       name: 'Test', regions: %w[North South], times: ['Morning'],
-      coordinator_object: RestoreStrategies::Person.new(
+      coordinator: RestoreStrategies::Person.new(
         given_name: Faker::Name.first_name,
         family_name: Faker::Name.last_name,
         email: Faker::Internet.email,
@@ -53,8 +53,21 @@ describe RestoreStrategies::OrganizationOpportunity do
 
   it 'updates an opportunity' do
     opp = user.opportunities.where(id: '1').first
-    type = ['Service', 'Event', 'Gift'].sample
+    type = %w[Service Event Gift].sample
     expect(opp.update(type: type, municipalities: ['Waco'])).not_to be false
     expect(opp.type).to eq type
+  end
+
+  it 'updates the coordinator' do
+    opp = user.opportunities.where(id: '1').first
+
+    name = Faker::Name.first_name
+    uuid = opp.coordinator.uuid
+    opp.coordinator.given_name = name
+    opp.save
+
+    opp = user.opportunities.refresh!.where(id: '1').first
+    expect(opp.coordinator.given_name).to eq name
+    expect(opp.coordinator.uuid).to eq uuid
   end
 end
