@@ -26,14 +26,36 @@ describe RestoreStrategies::OrganizationOpportunity do
     expect(opp.coordinator.class).to be RestoreStrategies::Person
   end
 
+  it 'initializes a coordinator hash to a person' do
+    email = Faker::Internet.email
+    opp = described_class.new(
+      name: 'Test', regions: %w[North South], times: ['Morning'],
+      coordinator: {
+        given_name: Faker::Name.first_name, family_name: Faker::Name.last_name,
+        email: email, telephone: Faker::PhoneNumber.phone_number
+      },
+      ongoing: true,
+      location: "#{Faker::Address.street_address} #{Faker::Address.city}",
+      status: 'Removed by nonprofit',
+      cities: [Faker::Address.city], days: %w[Sunday Friday],
+      level: ['Walk'],
+      description: Faker::Hipster.paragraph(1, false, 2),
+      issues: %w[Education Homelessness], type: 'Service',
+      group_types: %w[Family Group], municipalities: %w[Round Rock Hyde Park],
+      organization_sfid: '1234567XYZ',
+      organization_id: 662
+    )
+
+    expect(opp.coordinator.class).to be RestoreStrategies::Person
+    expect(opp.coordinator.email).to eq email
+  end
+
   it 'can create an opportunity' do
     opp = described_class.new(
       name: 'Test', regions: %w[North South], times: ['Morning'],
       coordinator: RestoreStrategies::Person.new(
-        given_name: Faker::Name.first_name,
-        family_name: Faker::Name.last_name,
-        email: Faker::Internet.email,
-        telephone: Faker::PhoneNumber.phone_number
+        given_name: Faker::Name.first_name, family_name: Faker::Name.last_name,
+        email: Faker::Internet.email, telephone: Faker::PhoneNumber.phone_number
       ),
       ongoing: true,
       location: "#{Faker::Address.street_address} #{Faker::Address.city}",
@@ -54,8 +76,22 @@ describe RestoreStrategies::OrganizationOpportunity do
   it 'updates an opportunity' do
     opp = user.opportunities.where(id: '1').first
     type = %w[Service Event Gift].sample
-    expect(opp.update(type: type, municipalities: ['Waco'])).not_to be false
+    telephone = Faker::PhoneNumber.phone_number
+    expect(
+      opp.update(
+        type: type,
+        municipalities: ['Waco'],
+        coordinator: {
+          id: opp.coordinator.id,
+          telephone: telephone
+        }
+      )
+    ).not_to be false
+
+    opp = user.opportunities.refresh!.where(id: '1').first
+
     expect(opp.type).to eq type
+    expect(opp.coordinator.telephone).to eq telephone
   end
 
   it 'updates the coordinator' do

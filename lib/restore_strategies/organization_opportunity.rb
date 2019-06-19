@@ -21,12 +21,16 @@ module RestoreStrategies
 
         if @coordinator
           @coordinator = RestoreStrategies::Person.new(
-            json: @coordinator,
-            response: response
+            json: @coordinator, response: response
           )
         end
       else
         self.instance_vars = data
+
+        if @coordinator.is_a? Hash
+          @coordinator = RestoreStrategies::Person.new(@coordinator)
+        end
+
         @path = "/api/admin/organizations/#{data[:organization_id]}" \
                 '/opportunities'
 
@@ -42,6 +46,14 @@ module RestoreStrategies
                  :instructions, :gift_question, :level, :days, :times,
                  :group_types, :issues, :regions, :municipalities, :supplies,
                  :cities, :coordinator # check that this works, recursively
+    end
+
+    def update(**data)
+      if data[:coordinator].is_a? Hash
+        data[:coordinator] = RestoreStrategies::Person.new(data[:coordinator])
+      end
+
+      super(**data)
     end
 
     def create_path
