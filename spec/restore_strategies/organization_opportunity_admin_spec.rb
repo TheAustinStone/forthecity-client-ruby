@@ -42,7 +42,6 @@ describe RestoreStrategies::OrganizationOpportunity do
       description: Faker::Hipster.paragraph(1, false, 2),
       issues: %w[Education Homelessness], type: 'Service',
       group_types: %w[Family Group], municipalities: %w[Round Rock Hyde Park],
-      organization_sfid: '1234567XYZ',
       organization_id: 662
     )
 
@@ -65,7 +64,6 @@ describe RestoreStrategies::OrganizationOpportunity do
       description: Faker::Hipster.paragraph(1, false, 2),
       issues: %w[Education Homelessness], type: 'Service',
       group_types: %w[Family Group], municipalities: %w[Round Rock Hyde Park],
-      organization_sfid: '1234567XYZ',
       organization_id: 662
     )
 
