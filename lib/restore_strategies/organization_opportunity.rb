@@ -12,7 +12,9 @@ module RestoreStrategies
     attr_accessor :name, :regions, :times, :coordinator, :ongoing, :location,
                   :status, :days, :level, :description, :issues, :type,
                   :organization_sfid, :organization_id, :group_types,
-                  :municipalities
+                  :municipalities, :closed, :items_committed, :items_given,
+                  :max_items_needed, :instructions, :gift_question, :supplies,
+                  :cities
 
     def initialize(json: nil, response: nil, **data)
       if json && response
@@ -44,7 +46,7 @@ module RestoreStrategies
                  :items_committed, :items_given, :max_items_needed, :ongoing,
                  :instructions, :gift_question, :level, :days, :times,
                  :group_types, :issues, :regions, :municipalities, :supplies,
-                 :cities, :coordinator # check that this works, recursively
+                 :cities, :coordinator, :status
     end
 
     def update(**data)
