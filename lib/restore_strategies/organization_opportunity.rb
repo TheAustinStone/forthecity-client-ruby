@@ -32,15 +32,15 @@ module RestoreStrategies
           @coordinator = RestoreStrategies::Person.new(@coordinator)
         end
 
-        @path = "/api/admin/organizations/#{data[:organization_id]}" \
-                '/opportunities'
-
         @new_object = if !data[:new_object].nil?
                         data[:new_object]
                       else
                         true
                       end
       end
+
+      @path = "/api/admin/organizations/#{data[:organization_id]}" \
+              '/opportunities'
 
       field_attr :id, :name, :type, :closed, :description, :location,
                  :items_committed, :items_given, :max_items_needed, :ongoing,
