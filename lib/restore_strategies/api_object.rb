@@ -101,9 +101,7 @@ module RestoreStrategies
       results = []
       items = JSON.parse(api_response.data)['collection']['items']
 
-      if items.nil?
-        raise NotFoundError.new(api_response, "#{self} not found")
-      end
+      raise NotFoundError.new(api_response, "#{self} not found") if items.nil?
 
       items.each do |item|
         results.push(new(json: item, response: api_response))
