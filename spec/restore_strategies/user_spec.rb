@@ -46,7 +46,8 @@ describe RestoreStrategies::User do
       street_address: Faker::Address.street_address,
       address_locality: Faker::Address.city,
       address_region: Faker::Address.state,
-      postal_code: Faker::Address.zip
+      postal_code: Faker::Address.zip,
+      cities: ['Austin', 'San Antonio']
     )
     expect(user.save).to be true
     expect(user.uuid.length).to be 36

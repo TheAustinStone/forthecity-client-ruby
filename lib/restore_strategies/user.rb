@@ -10,7 +10,7 @@ module RestoreStrategies
                   :address_region, :postal_code, :email, :uuid,
                   :subscription_id, :plan_id, :addon_id, :plan_level,
                   :created_at, :updated_at, :telephone, :reseller_id,
-                  :auto_approve_orgs
+                  :auto_approve_orgs, :cities
 
     @path = '/api/admin/users'
     validates :given_name, :family_name, :church, :website, :street_address,
@@ -34,7 +34,7 @@ module RestoreStrategies
                   :franchise_city, :website, :street_address, :address_locality,
                   :address_region, :postal_code, :email, :uuid, :telephone,
                   :subscription_id, :plan_id, :addon_id, :plan_level,
-                  :reseller_id, :auto_approve_orgs
+                  :reseller_id, :auto_approve_orgs, :cities
     end
 
     def create_path
