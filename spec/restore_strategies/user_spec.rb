@@ -72,6 +72,24 @@ describe RestoreStrategies::User do
     expect(user.uuid.length).to be 36
   end
 
+  it 'creates a user & organization with same city if cities is blank' do
+    city = Faker::Address.city
+    user = described_class.create(
+      given_name: Faker::Name.first_name,
+      family_name: Faker::Name.last_name,
+      church: church_names[Random.rand(church_names.length - 1)],
+      church_size: Random.rand(8000),
+      website: "http://#{Faker::Internet.domain_name}",
+      email: Faker::Internet.email,
+      telephone: Faker::PhoneNumber.phone_number,
+      franchise_city: city,
+      street_address: Faker::Address.street_address,
+      address_locality: Faker::Address.city,
+      address_region: Faker::Address.state,
+      postal_code: Faker::Address.zip
+    )
+  end
+
   it 'updates an existing user using update' do
     church = "Church Name #{Time.now.to_f}"
     user = described_class.find(1)
