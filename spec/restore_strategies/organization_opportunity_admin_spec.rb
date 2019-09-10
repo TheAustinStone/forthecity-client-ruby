@@ -23,7 +23,7 @@ describe RestoreStrategies::OrganizationOpportunity do
 
   it 'has a person as the coordinator' do
     opp = user.opportunities.last
-    expect(opp.coordinator.class).to be RestoreStrategies::Person
+    expect(opp.coordinator.class).to be RestoreStrategies::OrganizationPerson
   end
 
   it 'initializes a coordinator hash to a person' do
@@ -45,14 +45,14 @@ describe RestoreStrategies::OrganizationOpportunity do
       organization_id: 662
     )
 
-    expect(opp.coordinator.class).to be RestoreStrategies::Person
+    expect(opp.coordinator.class).to be RestoreStrategies::OrganizationPerson
     expect(opp.coordinator.email).to eq email
   end
 
   it 'can create an opportunity' do
     opp = described_class.new(
       name: 'Test', regions: %w[North South], times: ['Morning'],
-      coordinator: RestoreStrategies::Person.new(
+      coordinator: RestoreStrategies::OrganizationPerson.new(
         given_name: Faker::Name.first_name, family_name: Faker::Name.last_name,
         email: Faker::Internet.email, telephone: Faker::PhoneNumber.phone_number
       ),

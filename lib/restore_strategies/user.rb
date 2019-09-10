@@ -67,5 +67,12 @@ module RestoreStrategies
           nil, organization_id
         )
     end
+
+    def people
+      @people ||=
+        RestoreStrategies::OrganizationPeopleCollection.new(
+          nil, organization_id
+        )
+    end
   end
 end

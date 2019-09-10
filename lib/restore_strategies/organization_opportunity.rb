@@ -23,7 +23,7 @@ module RestoreStrategies
         super(json: json, response: response)
 
         if @coordinator
-          @coordinator = RestoreStrategies::Person.new(
+          @coordinator = RestoreStrategies::OrganizationPerson.new(
             json: @coordinator, response: response
           )
         end
@@ -31,7 +31,7 @@ module RestoreStrategies
         self.instance_vars = data
 
         if @coordinator.is_a? Hash
-          @coordinator = RestoreStrategies::Person.new(@coordinator)
+          @coordinator = RestoreStrategies::OrganizationPerson.new(@coordinator)
         end
 
         @new_object = if !data[:new_object].nil?
@@ -40,6 +40,8 @@ module RestoreStrategies
                         true
                       end
       end
+
+      @coordinator&.organization_id = data[:organization_id]
 
       @path = "/api/admin/organizations/#{data[:organization_id]}" \
               '/opportunities'
@@ -53,7 +55,9 @@ module RestoreStrategies
 
     def update(**data)
       if data[:coordinator].is_a? Hash
-        data[:coordinator] = RestoreStrategies::Person.new(data[:coordinator])
+        data[:coordinator] = RestoreStrategies::OrganizationPerson.new(
+          data[:coordinator]
+        )
       end
 
       super(**data)
